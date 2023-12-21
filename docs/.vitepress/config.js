@@ -2,9 +2,9 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "六陽文档",
-  titleTemplate: "我的开发文档",
-  description: "开发文档",
+  title: "六陽",
+  titleTemplate: "学习笔记",
+  description: "六陽学习笔记",
   head: [["link", { rel: "icon", href: "/favicon.ico" }]],
   themeConfig: {
     logo: "/images/logo.png",
@@ -30,26 +30,22 @@ export default defineConfig({
       },
       {
         text: "Backend",
-        link:"backend/index",
+        collapsed: false,
         items: [
           {
             text: "Golang",
+            link: "/backend/golang/index",
             items: [
               {
-                text: "Go语言介绍",
-                link: "/backend/golang/index",
-              },
-              {
-                text: "操作符和表达式",
-                link: "/backend/golang/operator",
+                text: "基础语法",
+                link: "/backend/golang/basic-grammar",
               },
             ],
           },
         ],
       },
     ],
-
-    socialLinks: [{ icon: "github", link: "https://github.com/vuejs/vitepress" }],
+    socialLinks: [{ icon: "github", link: "https://github.com/sunshine611/my" }],
   },
-  cleanUrls: true
+  cleanUrls: true,
 });
