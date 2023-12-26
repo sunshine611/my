@@ -40,6 +40,10 @@ export default defineConfig({
                 text: "基础语法",
                 link: "/backend/golang/basic-grammar",
               },
+              {
+                text: "数据类型",
+                link: "/backend/golang/data-type",
+              },
             ],
           },
         ],
