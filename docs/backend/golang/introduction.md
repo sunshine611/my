@@ -269,4 +269,4 @@ func main() {
 - godoc 可以为项目代码导出网页版的注释文档
 - 需要先安装 go install golang.org/x/tools/cmd/godoc@latest
 - 终端输入启动文档: godoc -http=:6060
-- 用浏览器访问：http://localhost:6060
+- 用浏览器访问：localhost:6060

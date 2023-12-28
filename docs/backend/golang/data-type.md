@@ -60,3 +60,182 @@ func main() {
 |  channel  |  nil   | 引用类型     |
 | interface |  nil   | 接口         |
 | function  |  nil   | 函数         |
+
+## 自定义类型
+
+- `type signal uint8`
+- `type ms map[string]string`
+- `type add func(a,b int) int`
+- `type user struct {name string;age int}`
+
+```go:line-numbers
+//自定义结构体类型
+type User struct {
+	Name string
+	Age  int
+}
+
+//自定义类型方法
+func (self User) Hello() {
+	fmt.Printf("my name is %s\n", self.Name)
+}
+
+//自定义类型
+type ms map[string]int
+
+//自定义类型方法
+func (self ms) Say() {
+	fmt.Printf("%d\n", self["hello"])
+}
+
+func main() {
+	var u User
+	u = User{"Tom", 18}
+	u.Hello() //my name is Tom
+	var a, b ms
+	a = ms{"hello": 33}
+	a.Say() //33
+	b = ms{"no": 99}
+	b.Say() //0
+}
+```
+
+## 字符串赋值
+
+`s1:="My name is XXX"`  
+`s2:="He say:\"I'm fine.\"\n\\Thank\tyou.\\"` //包含转义字符，阅读性很差  
+`` s3:=`here is first line.` `` //反引号里的转义字符无效，反引号里的原封不动地输出，包括空白符和换行符
+
+### 字符串常用操作
+
+| 方法                                | 介绍           |
+| :---------------------------------- | :------------- |
+| len(str)                            | 求长度         |
+| strings.Split                       | 分割           |
+| strings.Contains                    | 判断是否包含   |
+| strings.HasPrefix,strings.HasSuffix | 前缀/后缀判断  |
+| strings.Index(),strings.LastIndex() | 子串出现的位置 |
+
+### 字符串拼接
+
+- 加号(+)连接
+- `func fmt.Sprintf(format string,a ...interface{}) string`
+- `func strings.Join(elems []string,sep string) string`
+- _当有大量的 string 需要拼接时，用 strings.Builder 效率最高_
+
+```go:line-numbers
+func main() {
+	s1 := "aaa"
+	s2 := "bbb"
+	s3 := "ccc"
+
+	S1 := s1 + s2 + s3                           //第一种拼接字符串方式
+	S2 := fmt.Sprintf("%s%s%s", s1, s2, s3)      //第二种拼接字符串方式
+	S3 := strings.Join([]string{s1, s2, s3}, "") //第三种拼接字符串方式,效率较高
+	S4 := strings.Builder{}                      //第四种拼接字符串方式,效率最高
+	S4.WriteString(s1)
+	S4.WriteString(s2)
+	S4.WriteString(s3)
+
+	fmt.Println(S1)
+	fmt.Println(S2)
+	fmt.Println(S3)
+	fmt.Println(S4.String())
+}
+```
+
+### byte 和 rune
+
+- string 中每个元素叫“字符”，字符有两种：
+  1. byte：1 个字节，代表 ASCII 码的一个字符
+  2. rune：4 个字节，代表一个 UTF-8 字符，一个汉字可用一个 rune 表示
+- string 底层是 byte 数组，string 的长度就是该 byte 数组的长度，UTF-8 编码下一个汉字占 3 个 byte，即一个汉字占 3 个长度
+- string 可以转换为[]byte 或[]rune 类型
+- string 是常量，不能修改其中的字符
+
+## 强制类型转换
+
+- byte 和 int 可以互相转换
+- float 和 int 可以互相转换，小数位会丢失
+- bool 和 int 不能互相转换
+- 不同长度的 int 或 float 之间可以互相转换
+- string 可以转换为[]byte 或[]rune 类型，byte 或 rune 可以转为 string
+- 低精度向高精度转换没问题，高精度向低精度转换会丢失位数
+- 无符号向有符号转换，最高位是符号位
+
+## 数组
+
+数组是块连续的内存空间，在声明的时候必须指定长度，且长度不能改变。所以数组在声明的时候就可以把内存空间分配好，并赋上默认值，即完成了初始化。
+
+```go:line-numbers
+//数组初始化
+var arr1 [5]int = [5]int{}	//数组必须指定长度和类型，且长度和类型指定后不可改变
+var arr2 [5]int{}
+var arr3 = [5]int{3,2}	//给数组前2个元素赋值
+var arr4 = [5]int{2:15,4:30}	//指定index位置赋值
+var arr5 = [...]int{3,2,6,5,4}	//根据{}里元素的个数推断出数组的长度
+var arr6 = [...]struct {
+	name string
+	age int
+}{{"Tom",18},{"Jim",20}}	//数组的元素类型由匿名结构体给定
+
+//二维数组初始化
+var arr7 = [5][3]int{{1},{2,3}}//5行3列，只给前2行赋值，且前2行的所有列还没有赋满
+var arr8 = [...][3]int{{1},{2,3}} //第1维可以用...推测，第2维不能用...
+```
+
+### 访问数组里的元素
+
+- 通过 index 访问
+  - 首元素 `arr[0]`
+  - 末元素 `arr[len(arr)-1]`
+- 访问二位数组里的元素
+  - 位于第三行第四列的元素 `arr[2][3]`
+
+### 遍历数组
+
+```go:line-numbers
+var arr [5]int = [5]int{3,2,3,5,3}
+
+//遍历数组里的所有元素
+for i,ele := range arr {
+	fmt.Printf("index=%d,element=%d\n",i,ele)
+}
+
+//或者这样遍历数组
+for i := 0;i<len(arr);i++ {  //len(arr)获取数组的长度
+	fmt.Printf("index=%d,element=%d\n",i ,arr[i])
+}
+
+//遍历二维数组
+for row,array := range arr {  //先取出某一行
+	for col,ele := range array {  //再遍历这一行
+		fmt.Printf("arr[%d][%d]=%d\n",row,col,ele)
+	}
+}
+```
+
+### cap 和 len
+
+- cap 代表 capacity 容量
+- len 代表 length 长度
+- len 代表目前数组里的几个元素，cap 代表给数组分配的内存空间可以容纳多少个元素
+- 由于数组初始化之后长度不会改变，不需要给它预留内存空间，所以 len(arr)==cap(arr)
+
+### 数组传参
+
+- 数组的长度和类型都是数组类型的一部分，函数传递数组类型时这两部分都必须吻合
+- go 语言没用按引用传参，全都是按值传参，即传递数组实际上传的时数组的拷贝，当数组的长度很大时，仅传参开销都很大。
+- 如果想修改函数外部的数组，就把它的指针（数组在内存里的地址）传进来
+
+```go:line-numbers
+//通过指针修改原数组的值
+func arrPointer(arr *[5]int) {
+	arr[0] += 10
+}
+func main() {
+	var crr [5]int = [5]int{3, 2, 5, 4, 5}
+	arrPointer(&crr)
+	fmt.Println(crr[0]) //13，正常方法传参是不能更改原数组的值，但通过指针传参可以
+}
+```

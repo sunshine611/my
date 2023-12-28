@@ -37,8 +37,8 @@ export default defineConfig({
             link: "/backend/golang/index",
             items: [
               {
-                text: "基础语法",
-                link: "/backend/golang/basic-grammar",
+                text: "go语言入门",
+                link: "/backend/golang/introduction",
               },
               {
                 text: "数据类型",
@@ -51,5 +51,5 @@ export default defineConfig({
     ],
     socialLinks: [{ icon: "github", link: "https://github.com/sunshine611/my" }],
   },
-  cleanUrls: true,
+  cleanUrls: false,
 });
