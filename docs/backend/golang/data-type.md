@@ -163,7 +163,7 @@ func main() {
 - 低精度向高精度转换没问题，高精度向低精度转换会丢失位数
 - 无符号向有符号转换，最高位是符号位
 
-## 数组
+## array 数组
 
 数组是块连续的内存空间，在声明的时候必须指定长度，且长度不能改变。所以数组在声明的时候就可以把内存空间分配好，并赋上默认值，即完成了初始化。
 
@@ -239,3 +239,210 @@ func main() {
 	fmt.Println(crr[0]) //13，正常方法传参是不能更改原数组的值，但通过指针传参可以
 }
 ```
+
+## slice 切片
+
+在 Go 语言中，切片（slice）是一个引用类型，它提供了访问数组子序列（即数组的连续段）的功能。切片不存储任何数据，它只是对现有数组的引用。切片的定义和使用非常灵活，它是 Go 中处理序列数据的核心类型之一。
+
+```go:line-numbers
+var s []int	//切片声明，len=cap=0
+s = []int{}	//初始化，len=cap=0
+s=make([]int,3)	//初始化，len=cap=3
+s=make([]int,3,5)	//初始化，len=3，cap=5
+s=[]int{1,2,3,4,5}	//初始化，len=cap=5
+
+s2d := [][]int{
+	{1,}{2,3}
+}	//二维数组各行的列数相等，但二维切片各行的len可以不等
+```
+
+### append 附加
+
+- 切片相对于数组最大的特点就是可以追加元素，可以自动扩容。
+- 追加的元素放到预留的内存空间里，同时 len 加 1。
+- 如果预留空间已用完，则会重新申请一块更大的内存空间，capacity 变成之前的 2 倍(cap<1024)或 1.25 倍(cap>1024)。把原内存空间的数据拷贝过来，在新内存空间上执行 append 操作
+
+```go:line-numbers
+func sliceAppend() {
+	s := make([]int, 3, 5)
+	s = append(s, 100)
+	fmt.Println(len(s), cap(s)) //4,5
+	s = append(s, 100)
+	fmt.Println(len(s), cap(s)) //5,5
+	s = append(s, 100)
+	fmt.Println(len(s), cap(s)) //6,10
+}
+
+func main() {
+	sliceAppend()
+}
+```
+
+### 截取子切片
+
+- `s := make([]int,3,5)` //len=3,cap=5 `sub_slice = s[1:3]` //len=2,cap=4
+- 刚开始，子切片和母切片共享底层的内存空间，修改子切片会反映到母切片上。
+- 在子切片上执行 append 会在子元素后面附加新元素，假如此时子元素对应的母元素的位置有值，会被替换，母子元素内存还未分离。
+- 子元素对应的母元素的位置没有值，但是母元素还有预留内存空间的时候， 在子切片上执行 append 会接着占用母元素预留的内存空间，因为此时母子元素内存还未分离。
+- 当子切片不断执行 append，耗完了母切片预留的内存空间，子切片跟母切片就会发生内存分离，此后两个切片没用任何关系，但是之前被修改的母元素还是被修改后的样子。
+
+```go:line-numbers
+//截取切片
+func subSlice() {
+	mom := make([]int, 4, 5)
+	fmt.Println(mom)        //mom:[0,0,0,0]
+	child := mom[1:3]       //前闭后开，截取了第二位和第三位
+	child[1] = 8            //因为child[1]是mom[2]，所以改变的是mom[2]的值
+	fmt.Println(mom, child) //mom:[0,0,8,0],child[0,8]
+	child = append(child, 9)
+	fmt.Println(mom, child) //mom:[0,0,8,9],child:[0,8,9]
+	child = append(child, 12)
+	fmt.Println(mom, child) //mom:[0,0,8,9],child:[0,8,9,12]
+	child[0] = 3            //此时还未发生内存分离，更改child的值会影响到mom，
+	fmt.Println(mom, child) //mom:[0,3,8,9],child[3,8,9,12]
+	child = append(child, 15)
+	fmt.Println(mom, child) //mom:[0,3,8,9],child:[3,8,9,12,15]
+	child[0] = 6            //此时发生内存分离，更改child的值不会影响到mom
+	fmt.Println(mom, child) //mom:[0,3,8,9],child:[6,8,9,12,15]
+
+}
+
+func main() {
+	subSlice()
+}
+
+```
+
+### 切片传参
+
+- go 语言函数传参，传的都是值，即传切片会把切片的{arrayPointer,len,cap}这 3 个字段拷贝一份传进来
+- 由于传的是底层数组的指针，所以可以直接修改底层数组里的元素
+
+```go:line-numbers
+//切片传参
+func update_slice(arr []int) {
+	arr[0] = 100
+}
+
+func main() {
+	crr := []int{1, 2, 3}
+	fmt.Println(crr) //[1,2,3]
+	update_slice(crr)
+	fmt.Println(crr) //[100,2,3]，crr的数据直接通过函数传参方式修改成功
+
+}
+```
+
+## map 键值对
+
+go map 的底层实现是 hash table，根据 key 查找 value 的时间复杂度时 O(1)
+
+### map 的声明
+
+- `var m map[string]int` //声明 map,指定 key 和 value 的数据类型
+- `var m = map[string]int{"english":100,"math":98}` //初始化时直接赋值
+- `m = make(map[string]int)` //初始化，容量为 0
+- `m = make(map[string]int,5)` //初始化，容量为 5，建议初始化时给个合适的容量，减少扩容的概率
+
+### 添加和删除 key
+
+- `m["science"] = 88` //往 map 里添加 key-value 对
+- `m["science"] = 99` //会覆盖之前的值
+- `delete(m,"math")` //从 map 里删除 key-value 对
+- `len(m)` //获取 map 的长度
+- go 不支持对 map 上执行 cap 函数
+
+### 根据 key 找 value
+
+- 读取 key 对应的 value,如果 key 不存在,则返回 value 类型的默认值 value:=m["history"]
+- 取 key 对应的 value 建议使用这种方法，先判断 key 是否存在
+  ```go
+  if value,exists := m["history"];exists {
+  	fmt.Println(value)
+  }else{
+  	fmt.Println("map里不存在[history]这个key")
+  }
+  ```
+
+### 遍历 map
+
+```go
+var m = map[string]int{"english":100,"math":98}
+for key,value := range m{
+	fmt.Printf("%s=%d\n",key,value)
+}	//每次运行时候输出的key-value对可能顺序不一样
+```
+
+## channel 通道
+
+通道底层是一个环形队列(先进先出),send(插入)和 recv(取走)从同一个位置沿同一个方向顺序执行
+
+### 通道的声明和初始化
+
+- `var ch chan int` //声明
+- `ch = make(chan int,8)` //初始化，环形队列里可容纳 8 个 int
+
+### send 和 recv
+
+- `ch <- 1` //往通道里写入(send)数据
+- `ch <- 2`
+- `ch <- 3`
+- `v := <-ch` //从管道里取走(recv)的数据
+- `v = <-ch`
+
+```go:line-numbers
+func main() {
+	var ch chan int
+	fmt.Printf("ch is nil %t\n", ch == nil)
+	fmt.Printf("len of ch is %d\n", len(ch))
+
+	ch = make(chan int, 10)
+	fmt.Printf("len of ch is %d,cap of ch is %d\n", len(ch), cap(ch))
+
+	for i := 0; i < 10; i++ {
+		ch <- i + 1
+	}
+
+	ch <- 11 // [!code error] //这行代码会造成阻塞，因为通道初始化设定的容量大小不能变，再添加一个超过了容量
+
+	fmt.Printf("len of ch is %d,cap of ch is %d\n", len(ch), cap(ch))
+}
+```
+
+### 遍历管道
+
+- `close(ch)` //for range 循环前必须先关闭通道
+
+```go
+//遍历通道里剩下的元素
+for ele := range ch{
+	fmt.Println(ele)
+}
+```
+
+```go:line-numbers{10}
+func main() {
+	var ch chan i nt
+
+	ch = make(chan int, 10)
+	for i := 0; i < 10; i++ {
+		ch <- i + 1
+	}
+	fmt.Println(len(ch)) //10
+
+	close(ch)//for range循环前必须先关闭通道
+
+	for ele := range ch {
+		fmt.Println(ele)
+	}
+
+	fmt.Println(len(ch)) //0，遍历的同时也revc了
+}
+
+```
+
+## 引用类型
+
+- slice、map 和 channel 是 go 语言里的 3 种引用类型，都可以通过 make 函数来进行初始化(申请内存分配)
+- 因为它们都包含一个指向底层数据结构的指针,所以称之为“引用”类型
+- 引用类型未初始化时都是 nil,可以对它们执行 len()函数，返回 0

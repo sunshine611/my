@@ -37,12 +37,16 @@ export default defineConfig({
             link: "/backend/golang/index",
             items: [
               {
-                text: "go语言入门",
+                text: "入门",
                 link: "/backend/golang/introduction",
               },
               {
                 text: "数据类型",
                 link: "/backend/golang/data-type",
+              },
+              {
+                text: "语法结构",
+                link: "/backend/golang/syntax",
               },
             ],
           },
