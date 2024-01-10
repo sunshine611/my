@@ -10,8 +10,26 @@ export default defineConfig({
     logo: "/images/logo.png",
     logoLink: "/",
     // https://vitepress.dev/reference/default-theme-config
+    search: {
+      provider: "local",
+    },
+    outline: [2, 3],
     nav: [
       { text: "Home", link: "/" },
+      {
+        text: "Interview",
+        items: [
+          {
+            text: "Frontend",
+            items: [
+              {
+                text: "HTML",
+                link: "/interview/frontend/html",
+              },
+            ],
+          },
+        ],
+      },
       {
         text: "Backend",
         items: [
@@ -22,7 +40,6 @@ export default defineConfig({
         ],
       },
     ],
-
     sidebar: [
       {
         text: "Home",
@@ -47,6 +64,25 @@ export default defineConfig({
               {
                 text: "语法结构",
                 link: "/backend/golang/syntax",
+              },
+              {
+                text: "函数",
+                link: "/backend/golang/function",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        text: "Interview",
+        collapsed: false,
+        items: [
+          {
+            text: "Frontend",
+            items: [
+              {
+                text: "HTML",
+                link: "/interview/frontend/html",
               },
             ],
           },
