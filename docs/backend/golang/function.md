@@ -76,3 +76,60 @@ func main(){
 	variableEngthArg(3, brr...)//传不定长参数的另类写法
 }
 ```
+
+## 匿名函数
+
+在 Go 语言（Golang）中，匿名函数是没有名字的函数。它们通常用于实现闭包和即时函数调用。匿名函数可以定义在任何地方，并且可以直接调用。
+
+```go:line-numbers
+//f参数是一种函数类型
+func functionArg1(f func(a,b int) int,b int) int{
+    a := 2 * b
+    return f(a,b)
+}
+
+//foo是一种函数类型
+type foo func(a,b int) int
+//参数类型看上去简洁多了
+func functionArg2(f foo,b int) int{
+    a := 2 * b
+    return f(a,b)
+}
+
+type User struct{
+    Name string
+    bye foo //bye的类型是foo,而foo代表一种函数类型
+    hello func(name string) string  //使用匿名函数来声明struct字段的类型
+}
+
+ch := make(chan func(string) string,10) //用匿名函数
+ch <- func(name string) string{
+    return "hello " + name
+}
+```
+
+## 闭包
+
+- 闭包(Closure)是引用了自由变量的函数
+- 自由变量将和函数一同存在，即使已经离开了创造它的环境
+- 闭包复制的是原对象的指针(浅拷贝)
+
+```go:line-numbers
+func sub() func() {
+	i := 10
+	fmt.Printf("%p\n", &i) //0xc00000a0d8
+	b := func() {   //闭包
+		fmt.Printf("i address %p\n", &i)
+		i--
+		fmt.Println(i)
+	}
+	return b
+}
+
+func main() {
+	f := sub()
+	f() //f就是b,i没有被回收,i address 0xc00000a0d8,9
+	f() //i address 0xc00000a0d8,8
+	fmt.Println()
+}
+```
