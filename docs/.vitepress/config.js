@@ -17,6 +17,15 @@ export default defineConfig({
     nav: [
       { text: "Home", link: "/" },
       {
+        text: "Backend",
+        items: [
+          {
+            text: "golang",
+            link: "/backend/golang/index",
+          },
+        ],
+      },
+      {
         text: "Interview",
         items: [
           {
@@ -27,15 +36,6 @@ export default defineConfig({
                 link: "/interview/frontend/html",
               },
             ],
-          },
-        ],
-      },
-      {
-        text: "Backend",
-        items: [
-          {
-            text: "golang",
-            link: "/backend/golang/index",
           },
         ],
       },
