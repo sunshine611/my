@@ -69,6 +69,10 @@ export default defineConfig({
                 text: "函数",
                 link: "/backend/golang/function",
               },
+              {
+                text: "接口",
+                link: "/backend/golang/interface",
+              },
             ],
           },
         ],
