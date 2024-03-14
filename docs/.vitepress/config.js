@@ -73,6 +73,10 @@ export default defineConfig({
                 text: "接口",
                 link: "/backend/golang/interface",
               },
+              {
+                text: "Go常用命令",
+                link: "/backend/golang/command",
+              },
             ],
           },
         ],
