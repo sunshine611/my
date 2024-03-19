@@ -1,4 +1,6 @@
 import { defineConfig } from "vitepress";
+import mediumZoom from "medium-zoom";
+
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -16,6 +18,7 @@ export default defineConfig({
     outline: [2, 3],
     nav: [
       { text: "Home", link: "/" },
+      { text: "Network", link: "/network/" },
       {
         text: "Backend",
         items: [
@@ -44,6 +47,16 @@ export default defineConfig({
       {
         text: "Home",
         link: "/",
+      },
+      {
+        text: "Network",
+        link: "/network/",
+        items: [
+          {
+            text: "在浏览器输入URL会发生什么",
+            link: "/network/browser-url",
+          },
+        ],
       },
       {
         text: "Backend",
