@@ -9,15 +9,6 @@
 go build myapp.go
 ```
 
-## `go build`
-
-- 编译包和依赖
-
-```go
-//示例
-go build myapp.go
-```
-
 ## `go run`
 
 - 编译并运行Go程序

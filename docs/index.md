@@ -24,4 +24,9 @@ features:
     icon:
       src: /images/js_logo.png
     details: JavaScript (JS) 是一种高级的、解释型的编程语言。它是一种多范式的语言，支持事件驱动、函数式以及面向对象的编程风格。
+  - title: Dart
+    link: /frontend/dart/index
+    icon:
+      src: /images/dart_logo.png
+    details: Dart是一种开源的通用编程语言，由Google开发并首次发布于2011年。它被设计为用于构建前端用户界面的高性能、结构化的代码。
 ---

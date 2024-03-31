@@ -1,7 +1,6 @@
 import { defineConfig } from "vitepress";
 import mediumZoom from "medium-zoom";
 
-
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "六陽",
@@ -15,10 +14,19 @@ export default defineConfig({
     search: {
       provider: "local",
     },
-    outline: [2, 3],
+    outline: [2, 4],
     nav: [
       { text: "Home", link: "/" },
       { text: "Network", link: "/network/" },
+      {
+        text: "Frontend",
+        items: [
+          {
+            text: "dart",
+            link: "/frontend/dart/index",
+          },
+        ],
+      },
       {
         text: "Backend",
         items: [
@@ -59,12 +67,25 @@ export default defineConfig({
         ],
       },
       {
+        text: "Frontend",
+        collapsed: false,
+        items: [
+          {
+            text: "Dart",
+            link: "/frontend/dart/index",
+            collapsed:true,
+            items: [{ text: "Dart基础", link: "/frontend/dart/basic" }],
+          },
+        ],
+      },
+      {
         text: "Backend",
         collapsed: false,
         items: [
           {
             text: "Golang",
             link: "/backend/golang/index",
+            collapsed:true,
             items: [
               {
                 text: "入门",
@@ -96,7 +117,7 @@ export default defineConfig({
       },
       {
         text: "Interview",
-        collapsed: false,
+        collapsed: true,
         items: [
           {
             text: "Frontend",
