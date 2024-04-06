@@ -73,8 +73,11 @@ export default defineConfig({
           {
             text: "Dart",
             link: "/frontend/dart/index",
-            collapsed:true,
-            items: [{ text: "Dart基础", link: "/frontend/dart/basic" }],
+            collapsed: true,
+            items: [
+              { text: "基础", link: "/frontend/dart/basic" },
+              { text: "函数", link: "/frontend/dart/function" },
+            ],
           },
         ],
       },
@@ -85,7 +88,7 @@ export default defineConfig({
           {
             text: "Golang",
             link: "/backend/golang/index",
-            collapsed:true,
+            collapsed: true,
             items: [
               {
                 text: "入门",

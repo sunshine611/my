@@ -84,6 +84,7 @@ Dart 是一个支持类型安全的编程语言，提供了多种内建数据类
 - `int`: 用于表示整数值。
 - `double`: 用于表示 64 位（双精度）浮点数。
 - `num`: 既可以是整数,也可以是小数
+- API 文档: https://dart.dev/libraries/dart-core#numbers
 
 ```dart
 void main(){
@@ -163,6 +164,7 @@ void main(){
   - 单引号、双引号都可以
   - 三个引号可以声明包含换行符的字符串
   - `RegExp(r'正则表达式')`
+- API 文档: https://dart.dev/libraries/dart-core#strings-and-regular-expressions
 
 ```dart
 void main(){
@@ -209,7 +211,11 @@ void main(){
 }
 ```
 
+---
+
 ### 集合类型（Collection Types）
+
+集合类型通用方法 API: https://dart.dev/libraries/dart-core#common-collection-methods
 
 #### 1. **列表（List）**
 
@@ -221,6 +227,7 @@ void main(){
   - `List list = new List.empty(growable:true);` // 不限制长度的空列表
   - `List list = new List.filled(3,0);` // 声明指定长度的填充列表
 - 扩展操作符(...)
+- API 文档: https://dart.dev/libraries/dart-core#lists
 
 ```dart
 // List的基本方法及属性
@@ -336,14 +343,17 @@ void main(){
    print(flattend);  // result:[1,2,3,4]
 
    // 折叠 - 对列表中的每一个元素,做一个累积操作,nums = [1,2,3];
-   int result = nums.fold(2,(p,ele) => (p * ele).toInt());   //p在这里是2,2 * 1 * 2 * 3
+   int result = nums.fold(2,(p,ele) => (p * ele).toInt());   //p在这里是2,2 * 1 * 2 * 3 = 12
    print(result); // result:12
 
+   //执行累积相加
    int plus(p,ele){
-      print("$p,$ele"); // 3+1;4+2;6+3,第一次运算3+1=4,第二次运算4+2=6,第三次运算6+3=9;
+      /// 3,1;4,2;6,3,第一次运算3+1=4,第二次运算4+2=6,第三次运算6+3=9
+      /// 每次都是以前一个的运算结果和下一个值进行运算,直到数组遍历结束
+      print("$p,$ele");
       return p + ele;   // 4,6,9
    }
-   int resultPlus = nums.fold(3,plus); //传入参数3, 3 + 1 + 2 + 3
+   int resultPlus = nums.fold(3,plus); //传入参数3, 3 + 1 + 2 + 3 = 9
    print(resultPlus);   // result:9
 }
 ```
@@ -351,19 +361,103 @@ void main(){
 #### 2. **集合（Set）**
 
 - `Set`: 用于表示一组无序且唯一的对象。
+- Set 有字面量和构造函数两种声明方式(字面量中用大括号)
+- 无法通过下标取值
+- 具有集合特有的操作
+  - 例如:求交集、并集、差集等
+- API 文档: https://dart.dev/libraries/dart-core#sets
+
+```dart
+void main(){
+   //字面量声明
+   Set nums = <int>{1,2,3};
+   print(nums);   // result:{1,2,3}
+
+   //构造函数声明
+   Set fruits = new Set();
+   fruits.add("banana");
+   fruits.add("apple");
+   fruits.add("orange");
+   print(fruits); // result:{banana,apple,orange}
+   print(fruits.toList()); // result:[banana,apple,orange],Set转换成List数据类型
+
+
+   //List转换成Set
+   List myNums = [1,2,3,3,5];
+   print(myNums.toSet());  //result:{1,2,3,5},转换成Set类型会将List里面的重复项给过滤掉
+
+   //集合特有的操作
+   Set liubei = new Set();
+   liubei.addAll(['关羽','张飞','诸葛亮']);  // Set批量添加元素,使用中括号添加
+
+   Set caocao = new Set();
+   caocao.addAll(['张辽','司马懿','关羽']);
+
+   //求交集 - 获取两个集合共同拥有的元素
+   print(liubei.intersection(caocao)); // result:{关羽}
+
+   //求并集 - 两个集合合并,过滤重复元素
+   print(liubei.union(caocao));  // result:{关羽, 张飞, 诸葛亮, 张辽, 司马懿}
+
+   //求差集 - 通过difference方法,前者与后者进行差集比较,输出前者里面后者所没有的元素
+   print(liubei.difference(caocao));   // result:{张飞, 诸葛亮},caocao这个集合没有张飞和诸葛亮
+
+   //获取集合第一个元素
+   print(liubei.first); // result:关羽
+   //获取集合最后一个元素
+   print(liubei.last);  // result:诸葛亮
+}
+```
 
 #### 3. **映射（Map）**
 
-- `Map`: 一个键值对的集合，键和值都可以是任何类型。
+- `Map`: 是一个无序的键值对(key-value)映射,通常被称作哈希或字典.
+- 声明方式
+  - `Map map = {key1:value1,key2:value2};`
+  - `Map map = new Map();map['key'] = value;`
+- API 文档: https://dart.dev/libraries/dart-core#maps
 
-### 特殊类型
+```dart
+void main(){
+   // 字面量声明
+   Map zhang = {'name':'张三','age':20};
+   print(zhang); // result:{name: 张三, age: 20}
 
-1. **动态类型（Dynamic Type）**
+   // 构造函数声明
+   Map li = new Map();
+   li['name'] = '李四';
+   li['age'] = '22';
+   print(li);  // result:{name: 李四, age: 22}
 
-   - `dynamic`: 可以被赋予任何类型的值，类型安全检查将被推迟到运行时。
+   // 访问属性
+   print(zhang['name']);// result:张三
 
-2. **变量（Var）**
-   - `var`: 可以赋予任何类型的值，但只在第一次赋值时使用类型推断确定其类型。
+   // 判断 Map 中的 key 是否存在
+   print(zhang.containsKey('name'));   // result:true
+   print(zhang.containsKey('sex'));   // result:false
+
+   // 判断 Map 中的 value 是否存在
+   print(zhang.containsValue('张三')); // result:true
+   print(zhang.containsValue('李四')); // result:false
+
+   // 赋值
+   // putIfAbsent():如果 key 不存在,则赋值;反之存在,则不赋值
+   zhang.putIfAbsent('gender',()=>'男');
+   zhang.putIfAbsent('age',()=>'22');
+   print(zhang);  // result:{name: 张三, age: 20, gender: 男},因为gender不存在,所以赋值了,而age原本就存在,则不赋值
+
+   // 获取 Map 中所有的key
+   print(zhang.keys); // result:(name, age, gender)
+   // 获取 Map 中所有的value
+   print(zhang.values); // result:(张三, 20, 男)
+
+   // removeWhere():根据条件删除数据
+   zhang.removeWhere((key,value)=>key=='gender');
+   print(zhang);  // result:{name: 张三, age: 20},gender这个键值对被删除了
+}
+```
+
+---
 
 ### 对象和类类型（Object and Class Types）
 
@@ -374,14 +468,57 @@ void main(){
 2. **用户定义的类**
    - 除了内建类型外，你可以定义你自己的类，这些类也被当作类型使用。
 
+---
+
 ### 特殊用途类型
 
-1. **枚举（Enum）**
+#### 1. **符文 (Runes)**
 
-   - 用于定义一组命名的常量值。
+- Runes 对象是一个 32 位字符对象,它可以把文字转换成*符号表情*或*特定的文字*
+- `print('\u{1f44d}');`,输出结果是 👍
+- https://copychar.cc
 
-2. **Future 和 Stream**
-   - 用于异步编程，`Future`代表将来某个时候会返回的一个值，而`Stream`代表随时间传递的一系列值。
+```dart
+void main(){
+   String str = '😀';
+   print(str.length);   // result:2,因为Dart默认使用的字符集是UTF-16,放不下这个笑脸的编码,需要两个长度
+   print(str.runes.length);   // result:1,runes是32位字符对象,一个长度放得下笑脸的编码
+
+   // Runes 可以将 UTF-32 字符集表示的内容转成符号
+   Runes input = new Runes('\u{1f681}');  //当字符集的位数大于4个的时候需要加{}号
+   print(input);  // result:128641,输出结果是16进制转换成10进制的结果
+   print(new String.fromCharCodes(input));   // result:🚁,input字符集被转换成了符号
+}
+```
+
+#### 2. **Symbol**
+
+- 在 Dart 中符号用#开头来表示的标识符
+
+```dart
+void main(){
+   // 字面量声明Symbol
+   Symbol a = #abc;
+   print(a);   // result:Symbol("abc")
+
+   // 构造函数声明Symbol
+   Symbol b = new Symbol('cba');
+   print(b);   // result:Symbol("cba")
+
+   // Symbol判断相等
+   print(#abc == new Symbol('abc'));   // result:true
+}
+```
+
+#### 3. **枚举（Enum）**
+
+- 用于定义一组命名的常量值。
+
+#### 4. **Future 和 Stream**
+
+- 用于异步编程，`Future`代表将来某个时候会返回的一个值，而`Stream`代表随时间传递的一系列值。
+
+---
 
 ### 可空类型（Nullable Types）
 
@@ -393,3 +530,81 @@ Dart 2.12 及更高版本引入了空安全（null safety），使得变量默�
 - `String?`: 可以是 `String` 类型的文本或 `null`。
 
 在实际编程中，你应该根据变量应保存的数据类型来选择最合适的类型。正确使用类型有助于提高代码的清晰度和质量，同时利用 Dart 的类型系统来进行错误检查。
+
+## Dart 运算符
+
+### 地板除 (~/)
+
+```dart
+void main(){
+   // 地板除
+   print(7 / 4);  // result:1.75
+   print(7 ~/ 4); // result:1,(~/)运算会对结果向下取整
+}
+```
+
+### 类型判断运算符 (is | !is)
+
+```dart
+void main(){
+   // 类型判断运算符
+   List list = [];
+   // 判断list是否是List,result:list is List,true
+   if(list is List){
+      print('list is List');
+   }else{
+      print('list is not List');
+   }
+   // 判断list是否非List,result:list is List,!true=false
+   if(list is! List){
+      print('list is not List');
+   }else{
+      print('list is List');
+   }
+}
+```
+
+### 避空运算符
+
+```dart
+void main(){
+   // 避空运算符
+   print(1 ?? 3); // result:1
+   print(null ?? 12);   // result:12
+
+   var foo;
+   print(foo ?? 18); // result:18,因为foo是null,则返回18
+
+   // 避空赋值
+   var a;
+   a ??= 3;
+   print(a);   // result:3,当a为null的时候,则赋值3
+   a ??=6;
+   print(a);   // result:3,因为a在上面赋值为3,不是null了,所以a不重新赋值6
+}
+```
+
+### 条件属性运算符 (保护可能为 null 的属性)
+
+```dart
+void main(){
+   // 条件属性运算符
+   var m = new Map();
+   print(m.length);  // result:0
+
+   var obj;
+   print(obj.length);   // result:Script error.
+   print(obj?.length);   // result:null,先判断length是否存在,不存在就返回null
+}
+```
+
+### 级联运算符
+
+```dart
+void main(){
+   // 级联运算符
+   Set s = new Set();
+   s..add('a')..add('b')..add('c')..remove('b');
+   print(s);   // result:{a,c}
+}
+```
