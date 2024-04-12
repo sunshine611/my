@@ -77,6 +77,7 @@ export default defineConfig({
             items: [
               { text: "基础", link: "/frontend/dart/basic" },
               { text: "函数", link: "/frontend/dart/function" },
+              { text: "类与对象", link: "/frontend/dart/class" },
             ],
           },
         ],

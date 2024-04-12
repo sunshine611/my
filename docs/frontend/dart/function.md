@@ -102,3 +102,80 @@ var myPrint = (value) {
     print(value);
 };
 ```
+
+## 闭包
+
+- Dart 中闭包的实现方式与 Javascript 中完全一致
+- 使用时机: 既能重用变量,又保护变量不被污染
+- 实现原理: 外层函数被调用后,外层函数的作用域对象(AO)被内层函数引用着,导致外层函数的作用域对象无法释放,从而形成闭包
+
+```dart
+void main(){
+    //闭包
+    Function p = parent();
+    p();   // result:900
+    p();   // result:800,money一直被引用着,所以每次调用的时候值不会被初始化为1000
+}
+// 外层函数
+parent(){
+    int money = 1000;   // 外层函数的作用域对象
+    // 内层函数
+    return (){
+        money -= 100;   // 外层函数的作用域对象被内层函数引用着
+        print(money);
+    };
+}
+```
+
+## 异步函数
+
+- Javascript 中,异步调用通过 Promise 来实现
+  - async 函数返回一个 Promise,await 用于等于 Promise
+- Dart 中,异步调用通过 Future 来实现
+  - async 函数返回一个 Future,await 用于等于 Future
+- Future 详情
+  - https://api.dart.dev/stable/3.3.3/dart-async/Future-class.html
+
+```dart
+import 'package:http/http.dart' as http;     // 不是核心包,需要pub get安装
+import 'dart:convert';   // dart 核心包
+
+void main() {
+  // 访问成功:result:192.168.X.X,返回当前主机的ip地址
+  getIP().then((res) => print(res)).catchError((err) => print(err));
+}
+
+Future getIP() {
+  final url = 'https://httpbin.org/ip'; // 该地址返回本机IP地址
+  return http.get(Uri.parse(url)).then((res) {  // url地址需要转换成Uri类型
+    String ip = jsonDecode(res.body)['origin']; // 返回结果转换成json格式
+    return ip;  // 返回ip地址
+  });
+}
+```
+
+### async 和 await
+
+```dart
+import 'package:http/http.dart' as http;    // 不是核心包,需要pub get安装
+import 'dart:convert';  // dart 核心包
+
+void main() async {
+  try {
+    // String ip = await getIP();   //也可以这样子写
+    await getIP().then((ip) {
+      print(ip);
+    });
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future getIP() async {
+  final url = 'https://httpbin.org/ip';
+  final res = await http.get(Uri.parse(url));
+  String ip = jsonDecode(res.body)['origin'];
+  return ip;
+}
+
+```
