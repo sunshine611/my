@@ -442,7 +442,7 @@ class Phone {
 }
 ```
 
-## 继承
+## 继承 (extends)
 
 - 根据类的先后顺序,可以将类分成**父类**和**子类**
 - 子类通过 **extends** 关键字 **继承** 父类
@@ -457,9 +457,9 @@ class Phone {
 文件结构
 
 ├─ lib
-│  ├─ Father.md
-│  └─ Son.md
-└─ main.md
+│  ├─ Father.dart
+│  └─ Son.dart
+└─ main.dart
 ```
 
 ### 继承的特性
@@ -584,3 +584,422 @@ class Son extends Father {
 ```
 
 :::
+
+## 抽象类 (abstract)
+
+- 抽象类是用 **abstract** 关键字修饰的类
+- 抽象类的作用是充当普通类的模板,约定一些必要的属性和方法
+- 抽象方法是指没有方法体的方法
+  - 抽象类中一般都有抽象方法,也可以没有抽象方法
+  - 普通类中,不能有抽象方法
+- 抽象类不能被实例化 (不能被 new)
+- 抽象类可以被普通类继承 (extends)
+  - 如果普通类继承抽象类,必须实现抽象类中所有的**抽象方法**
+- 抽象类还可以充当接口被实现 (implements)
+  - 如果把抽象类当作接口实现的话,普通类必须得实现抽象类里面定义的所有**属性和方法**
+
+```
+文件结构
+
+├─ lib
+│  ├─ Phone.dart  // 手机抽象(abstract)类
+│  ├─ IPhone.dart // 苹果手机类
+│  └─ Samsung.dart  // 三星手机类
+└─ main.dart  // 程序运行入口
+```
+
+::: code-group
+
+```dart [main.dart]
+import './lib/IPhone.dart';
+import './lib/Samsung.dart';
+
+void main(){
+  // 抽象类不能被实例化
+  // Phone p = Phone(); // [!code error]
+
+  IPhone i = IPhone();
+  i.processor();  // result: A18
+  i.camera(); // result: 1200万像素
+
+  Samsung s = Samsung();
+  s.processor();  // result: 高通 Gen 3
+  s.camera(); // result: 2000万像素
+  // Samsung 继承了 Phone ,可以使用 Phone 中的普通方法 info()
+  s.info(); // result: 我是抽象类中的一个普通方法
+}
+```
+
+```dart [Phone.dart]
+// 1. 抽象类必须通过 abstract 关键字声明
+// 2. 抽象类中可以有抽象方法,也可以没有抽象方法;但没有抽象方法的抽象类是没有意义的.
+abstract class Phone{
+  // 声明抽象方法
+  void processor(); // 手机的处理器
+
+  void camera();  // 手机的摄像头
+
+  // 抽象类里面可以写普通方法
+  void info(){
+    print('我是抽象类中的一个普通方法');
+  }
+}
+```
+
+```dart [IPhone.dart]
+import 'Phone.dart';
+
+// 普通类继承了抽象类,就必须实现抽象类中所有的抽象方法
+class IPhone extends Phone{
+  // 实现抽象类Phone里面的processor方法
+  @override
+  void processor(){
+    print('A18');
+  }
+
+  // 实现抽象类Phone里面的camera方法
+  @override
+  void camera(){
+    print('1200万像素');
+  }
+
+  // 普通类中不能有抽象方法,就是没有方法体的方法
+  // void screen(); // [!code error]
+}
+```
+
+```dart [Samsung.dart]
+import 'Phone.dart';
+
+// 普通类继承了抽象类,就必须实现抽象类中所有的抽象方法
+class Samsung extends Phone{
+  // 实现抽象类Phone里面的processor方法
+  @override
+  void processor(){
+    print('高通 Gen 3');
+  }
+
+  // 实现抽象类Phone里面的camera方法
+  @override
+  void camera(){
+    print('2000万像素');
+  }
+}
+```
+
+:::
+
+## 接口 (Interface)
+
+- 接口在 Dart 中就是一个类 (只是用法不同)
+  - 与 Java 不同, Java 中的接口需要用 interface 关键字声明; Dart 中不需要
+  - 接口可以是任意类,但一般使用抽象类做接口
+- 一个类可以实现 (implements) 多个接口,多个接口用逗号分隔
+  - `class MyClass implements Interface1,Interface2 {...}`
+  - 接口可以看成一个个小零件,类实现接口就相当于组装零件
+- 普通类实现接口后,必须重写接口中所有的属性和方法
+
+```
+文件结构
+
+├─ lib
+│  ├─ Phone.dart  // 手机具体类,实现 Processor,Camera 抽象类的接口
+│  ├─ Processor.dart // 处理器抽象类
+│  └─ Camera.dart  // 摄像头抽象类
+└─ main.dart  // 程序运行入口
+```
+
+::: code-group
+
+```dart [main.dart]
+import './lib/Phone.dart';
+
+void main(){
+  Phone p = Phone('4核','1200万');
+  p.arch('5nm');  // result:芯片制程 5nm
+  p.brand('蔡司');  // result:相机品牌 蔡司
+}
+```
+
+```dart [Phone.dart]
+import 'Processor.dart';
+import 'Camera.dart';
+
+// 通过普通类实现Processor、Camera接口
+class Phone implements Processor, Camera{
+  // 必须重写接口的属性和方法
+  @override
+  String? cores;
+
+  @override
+  String? resolution;
+
+  // 构造函数
+  Phone(this.cores,this.resolution);
+
+  // 实现接口 Processor 里面的 arch 方法
+  @override
+  void arch(String? name){
+    print('芯片制程 $name');
+  }
+
+  // 实现接口 Camera 里面的 brand 方法
+  @override
+  void brand(String? name){
+    print('相机品牌 $name');
+  }
+}
+```
+
+```dart [Processor.dart]
+// 抽象类,手机的处理器
+abstract class Processor{
+  String? cores; // 处理器内核:2核,4核
+  arch(String name);  // 芯片制程: 7nm,5nm
+}
+```
+
+```dart [Camera.dart]
+// 抽象类,手机的摄像头
+abstract class Camera{
+  String? resolution; // 像素:1000万,2000万
+  brand(String name);  // 品牌:莱卡,蔡司
+}
+```
+
+:::
+
+## 混入 (Mixin)
+
+- 混入 (Mixin) 是一段公共代码,混入有两种声明方式:
+  - 将类当作混入 `class MixinA {...}`
+    - 作为 Mixin 的类只能继承自 Object ,不能继承其它类
+    - 作为 Mixin 的类不能有构造函数
+  - 使用 mixin 关键字声明 `mixin MixinB {...}`
+- 混入 (Mixin) 可以提高代码复用的效率, 普通类可以通过 **with** 来使用混入
+  - `class MyClass with MixinA, MixinB {...}`
+- 使用多个混入时, 后引入的混入会覆盖之前混入中的重复的内容
+  - 假定 MixinA 和 MixinB 中都有 hello() 方法, MyClass 会使用 MixinB 中的 hello() 方法
+
+```
+文件结构
+
+├─ lib
+│  ├─ MyClass.dart  // 引用了 MixinA 和 MixinB 混入的普通类
+│  ├─ MixinA.dart // 普通类声明的混入
+│  └─ MixinB.dart  // 使用 mixin 关键字声明的混入
+└─ main.dart  // 程序运行入口
+```
+
+::: code-group
+
+```dart [main.dart]
+import './lib/MyClass.dart';
+
+void main(){
+  MyClass m = MyClass();
+  m.printA(); // result:A
+  m.printB(); // result:B
+
+  // 后引入的混入,会覆盖之前引入的混入中重复的内容
+  print(m.name);  // result:MixinB
+  m.run();  // result:B is runing
+}
+```
+
+```dart [MyClass.dart]
+import 'MixinA.dart';
+import 'MixinB.dart';
+
+// MyClass 引入了 MixinA 和 MixinB 混入
+class MyClass with MixinA, MixinB{
+
+}
+```
+
+```dart [MixinA.dart]
+// 使用普通类声明的混入 MixinA
+// MixinA 的类只能继承自 Object ,不能继承其它类,因为它被作为 Mixin 引用了
+// MixinA 也不能有构造函数, 因为它被作为 Mixin 引用了
+class MixinA{
+  String? name = 'MixinA';
+
+  // MixinA(); // 被作为混入的类,不能拥有构造函数 // [!code error]
+
+  void printA(){
+    print('A');
+  }
+
+  void run(){
+    print('A is runing');
+  }
+}
+```
+
+```dart [MixinB.dart]
+//使用 mixin 声明的混入 MixinB
+mixin MixinB{
+  String? name = 'MixinB';
+
+  void printB(){
+    print('B');
+  }
+
+  void run(){
+    print('B is runing');
+  }
+}
+```
+
+:::
+
+## 泛型 (Generics)
+
+- 泛型是在函数、类、接口中指定 **宽泛数据类型** 的语法
+
+  - 泛型函数
+  - 泛型类
+  - 泛型接口
+
+- 通常, 在尖括号( <> )中, 使用一个字母来代表类型, 例如 E,T,S,K,和 V 等
+- 作用: 使用泛型可以减少重复的代码
+
+### 泛型函数
+
+```dart
+// 泛型函数,既可以约束类型,又可以减少代码量
+T getData<T>(T value){
+  return value;
+}
+
+// 只约定参数类型,不约定函数返回值的类型
+getInfo<T>(T value){
+  return value;
+}
+
+void main(){
+  // 调用泛型函数
+  print(getData<int>(20));  // result:20
+  print(getData<String>('Hello'));  // result:Hello
+}
+```
+
+### 泛型类
+
+::: code-group
+
+```dart [main.dart]
+import 'GenericsClass.dart';
+
+void main(){
+  // 实例化泛型类
+  GenericsClass g = GenericsClass<int>();
+  g.add(1);
+  g.add(9);
+  g.info(); // result:{1, 9}
+
+  // 实例化泛型类
+  GenericsClass gs = GenericsClass<String>();
+  gs.add('Hello');
+  gs.add('World');
+  gs.info(); // result:{Hello, World}
+
+  // 字面量形式泛型
+  Set s = <int>{};  // 只能在该Set里面添加 int 类型的成员
+}
+```
+
+```dart [GenericsClass.dart]
+// 泛型类
+class GenericsClass<T>{
+  Set s = Set<T>();
+
+  void add(T value){
+    this.s.add(value);
+  }
+
+  void info(){
+    print(this.s);
+  }
+}
+```
+
+:::
+
+### 泛型接口
+
+```
+文件结构
+
+├─ lib
+│ ├─ Cache.dart // 缓存,泛型接口
+│ ├─ FileCache.dart // 文件缓存,实现泛型接口的类
+│ └─ MemoryCache.dart // 内存缓存,实现泛型接口的类
+└─ main.dart // 程序运行入口
+
+```
+
+::: code-group
+
+```dart [main.dart]
+import './lib/FileCache.dart';
+import './lib/MemoryCache.dart';
+
+void main(){
+  // 文件缓存 - 缓存字符串
+  FileCache fc = FileCache<String>();
+  fc.setByKey('foo','bar'); // result:文件缓存: key=foo,value=bar
+
+  // 文件缓存 - 缓存Map数据
+  FileCache fm = FileCache<Map<String,String>>();
+  fm.setByKey('zoo',{'title':'标题党'});  // result: 文件缓存: key=zoo,value={title: 标题党}
+}
+```
+
+```dart [FileCache.dart]
+import './Cache.dart';
+
+// 实现泛型接口的类
+// FileChcha<T> 这里的 <T> 相当于传入 FileCache 后再传给 Cache
+class FileCache<T> implements Cache<T>{
+  @override
+  getByKey(String key) {
+    return null;
+  }
+
+  @override
+  void setByKey(String key, T value) {
+    print('文件缓存: key=${key},value=${value}');
+  }
+}
+```
+
+```dart [MemoryCache.dart]
+import './Cache.dart';
+
+// 实现泛型接口的类
+// MemoryCache 这里的 <T> 相当于传入 MemoryCache 后再传给 Cache
+class MemoryCache<T> implements Cache<T>{
+  @override
+  getByKey(String key) {
+    return null;
+  }
+
+  @override
+  void setByKey(String key, T value) {
+    print('内存缓存: key=${key},value=${value}');
+  }
+}
+```
+
+```dart [Cache.dart]
+// 泛型接口
+abstract class Cache<T>{
+  getByKey(String key);
+  void setByKey(String key,T value);
+}
+```
+
+:::
+
+### 使用泛型限制参数类型

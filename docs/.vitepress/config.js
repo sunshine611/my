@@ -3,7 +3,7 @@ import mediumZoom from "medium-zoom";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "六陽",
+  title: "六陽笔记",
   titleTemplate: "学习笔记",
   description: "六陽学习笔记",
   head: [["link", { rel: "icon", href: "/favicon.ico" }]],
