@@ -14,15 +14,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <img ref="imgRef" :src="withBase(src)" :title="title"/>
+  <img ref="imgRef" :src="withBase(src)" :title="title" class="zoom-img"/>
 </template>
 
-<style>
+<style lang="scss" scoped>
 .medium-zoom-overlay {
   z-index: 9998;
 }
 
 .medium-zoom-image {
   z-index: 9999;
+}
+.zoom-img{
+  border-radius: 5px;
 }
 </style>

@@ -1003,3 +1003,75 @@ abstract class Cache<T>{
 :::
 
 ### 使用泛型限制参数类型
+
+```
+文件结构
+
+├─ lib
+│ ├─ Foo.dart // Foo类的泛型 <T> 继承了SomeBaseClass类,从而限制了泛型参数类型
+│ ├─ Extender.dart // Extender 类继承了 SomeBaseClass 类
+│ ├─ SomeBaseClass.dart // SomeBaseClass 类
+│ └─ AnotherClass.dart // AnotherClass 类
+└─ main.dart // 程序运行入口
+
+```
+
+::: code-group
+
+```dart [main.dart]
+import './lib/Foo.dart';
+import './lib/AnotherClass.dart';
+import './lib/SomeBaseClass.dart';
+
+
+void main(){
+  // 这里 Foo<> 泛型传递的参数符合 SomeBaseClass 类,代码运行正常
+  Foo someBaseClassFoo = Foo<SomeBaseClass>();
+  print(someBaseClassFoo);  // result:Instance of 'Foo<SomeBaseClass>'
+
+  // 这个实例化是错误的,因为不符合 class Foo<T extends SomeBaseClass> 限定的要求
+  // Foo f = Foo<AnotherCalss>(); // [!code error]
+
+  // 因为 Extender 继承了 SomeBaseClass ,代码运行正常
+  Foo extender = Foo<Extender>();
+  print(extender);  // result:Instance of 'Foo<Extender>'
+
+  // 不传递泛型参数的时候,会默认传递 SomeBaseClass 泛型
+  Foo foo = Foo();
+  print(foo); // result:Instance of 'Foo<SomeBaseClass>'
+}
+```
+
+```dart [Foo.dart]
+import './SomeBaseClass.dart';
+
+class Foo<T extends SomeBaseClass>{
+  // 重写了 toString() 方法
+  @override
+  String toString() => "Instance of 'Foo<$T>'";
+}
+```
+
+```dart [Extender.dart]
+import './SomeBaseClass.dart';
+
+// Extender 继承了 SomeBaseClass
+class Extender extends SomeBaseClass{
+
+}
+```
+
+```dart [SomeBaseClass.dart]
+class SomeBaseClass{
+
+}
+```
+
+```dart [AnotherClass.dart]
+class AnotherClass{
+
+}
+```
+
+:::
+

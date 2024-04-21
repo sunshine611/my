@@ -78,6 +78,7 @@ export default defineConfig({
               { text: "基础", link: "/frontend/dart/basic" },
               { text: "函数", link: "/frontend/dart/function" },
               { text: "类与对象", link: "/frontend/dart/class" },
+              { text: "库与生态", link: "/frontend/dart/library" },
             ],
           },
         ],
@@ -135,7 +136,9 @@ export default defineConfig({
         ],
       },
     ],
-    socialLinks: [{ icon: "github", link: "https://github.com/sunshine611/my" }],
+    socialLinks: [
+      { icon: "github", link: "https://github.com/sunshine611/my" },
+    ],
   },
   cleanUrls: false,
 });
