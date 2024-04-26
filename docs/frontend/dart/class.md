@@ -218,7 +218,34 @@ class Person{
 
 ---
 
-```dart
+```
+文件结构
+
+├─ lib
+│ └─ Person.dart // Person 类
+└─ main.dart // 程序运行入口
+```
+
+::: code-group
+
+```dart [main.dart]
+// 文件目录和lib同级的main方法入口
+import './lib/Person.dart';
+void main(){
+  Person p = Person('张三');
+  print(p.name);  // result:张三
+
+  // 访问私有属性
+  print(p._money); // result:Error,此时不能访问Person类里面的私有属性 // [!code error]
+
+  print(p.getMoney());  // result: 100
+
+  // 访问私有方法
+  p._wife(); // result:Error,无法访问Person类里面的私有方法 // [!code error]
+}
+```
+
+```dart [Person.dart]
 // 文件目录在lib文件下的Person.dart
 class Person{
   String? name;
@@ -240,22 +267,7 @@ class Person{
 }
 ```
 
-```dart
-// 文件目录和lib同级的main方法入口
-import './lib/Person.dart';
-void main(){
-  Person p = Person('张三');
-  print(p.name);  // result:张三
-
-  // 访问私有属性
-  print(p._money); // result:Error,此时不能访问Person类里面的私有属性 // [!code error]
-
-  print(p.getMoney());  // result: 100
-
-  // 访问私有方法
-  p._wife(); // result:Error,无法访问Person类里面的私有方法 // [!code error]
-}
-```
+:::
 
 ## Getter 与 Setter
 
@@ -299,6 +311,148 @@ class Circle {
   set setR(val) {
     r = val;
   }
+}
+```
+
+## 类的默认属性和方法
+
+### call
+
+- 在类中可以声明 call 方法 (方法名不能变)
+- 当我们将类的实例, 用作函数时, 会自动调用 call 方法
+
+<ZoomImg src="/images/dart/call.png" title="call"/>
+
+### noSuchMethod
+
+- 当我们调用了一个类的未定义的方法时,Dart 会自动调用 noSuchMethod
+- 使用前提
+  - 类中声明了 noSuchMethod (否则调用默认的 noSuchMethod)
+  - 实例化对象必须用 dynamic 来修饰 `dynamic p = Person;`
+  - 调用的是未定义方法 (p.undefinedMethod());
+
+```dart
+void main() {
+  dynamic p = Person(); // 使用 noSuchMethod 方法,实例化对象时候必须使用 dynamic 声明
+  p.say(); // result:Say something
+
+  // 虽然 Person 类没有定义 study 方法,但是因为 Person 类重写了 noSuchMethod 方法,所以可以正常使用不报错
+  p.study(); // result: Say noSuchMethod
+}
+
+class Person {
+  say() {
+    print('Say something');
+  }
+
+  @override
+  noSuchMethod(Invocation invocation) {
+    return print('Say noSuchMethod');
+  }
+}
+```
+
+### hashCode
+
+- hashCode 是 Dart 对象的唯一标识
+- hashCode 表现为一串数字
+- Dart 中的每个对象都有 hashCode
+- 我们可以通过 hashCode 来判断两个对象是否相等
+
+```dart
+void main() {
+  // 普通类实例化
+  Person p1 = Person();
+  Person p2 = Person();
+  print('${p1.hashCode}, ${p2.hashCode}'); // result: 每次生成都会生成一串新的随机数字
+  print(p1.hashCode == p2.hashCode); // result:false ,两个实例化对象是不同的
+
+  // 单例模式实例化
+  PersonSingle ps1 = PersonSingle();
+  PersonSingle ps2 = PersonSingle();
+  print('${ps1.hashCode}, ${ps2.hashCode}'); // result:
+  print(ps1.hashCode == ps2.hashCode); // result:false ,两个实例化对象是不同的
+}
+
+// 普通类
+class Person {
+  say() {
+    print('Say something');
+  }
+}
+
+// 单例模式类
+class PersonSingle {
+  // 静态私有实例变量
+  static PersonSingle? _instance;
+
+  // 私有命名构造函数
+  PersonSingle._internal();
+
+  // 提供公共的访问点
+  static PersonSingle getInstance() {
+    _instance ??= PersonSingle._internal();
+    return _instance!;
+  }
+
+  // 工厂构造函数使用 getInstance 返回实例
+  factory PersonSingle() => getInstance();
+}
+
+```
+
+### typedef
+
+- typedef 可以用来自定义类型别名,目的是让程序的可读性更强
+  - 我们可以在声明泛型时,使用自定义的类型
+- 语法
+  - `typedef function_name(parameters);` // 定义函数类型别名
+  - `typedef variable_name = List<int>;` // 定义非函数类型别名
+- 版本声明
+  - SDK 2.13 之前,typedef 仅限于函数类型
+  - SDK 2.13 之后,typedef 可以定义非函数类型 `sdk:">=2.13.0"`
+
+```dart
+typedef MathOperation(int a,int b);
+
+// 声明加法运算
+add(int a,int b){
+  print('加法运算:' + (a + b).toString());
+}
+
+// 声明加法运算
+sub(int a,int b){
+  print('减法运算:' + (a - b).toString());
+}
+
+add2(int a,int b,int c){
+  print('加法运算:' + (a + b +c).toString());
+  return a + b + c;
+}
+
+void main(){
+  print(add is MathOperation);  // result:true,参数和 MathOperation 数量一样,参数类型也一样
+  print(add is Function);  // result:true,add 是一个方法
+
+  print(sub is MathOperation);  // result:true,参数和 MathOperation 数量一样,参数类型也一样
+  print(sub is Function);  // result:true,sub 是一个方法
+
+  print(add2 is MathOperation); // result:false,参数和 MathOperation 数量不一样
+  print(add2 is Function);  // result:true,add2 是一个方法
+
+  MathOperation op = add;
+  op(20,10); // result: 加法运算:30,
+
+  op = sub;
+  op(20,10);  // result: 减法运算:10
+
+  // 计算器,typedef 的神奇用法
+  calculator(int a,int b ,MathOperation op){
+    op(a,b);  // 这里加入op是add,那就执行加法运算,op是sub.那就执行减法运算
+  }
+
+  calculator(8,9,add);  // result: 加法运算:17
+  calculator(8,9,sub);  // result: 减法运算:-1
 }
 ```
 
@@ -1075,3 +1229,47 @@ class AnotherClass{
 
 :::
 
+## 扩展 (extension on)
+
+- extension 关键字在 Dart 2.7 及其以上才支持
+  - `sdk: ">=2.7.0"`
+- extension 可以扩展对象的内容
+  - `extension StringExtension on String{//扩展的内容};`
+  - 扩展不仅可以定义方法, 还可以定义 setter,getter,operator
+- 使用
+  - 声明扩展
+  - 引入扩展
+  - 使用扩展 (String.扩展内容)
+
+```dart
+main() {
+  String number = '20';
+  print(number.parseInt()); // result: 20,parseInt() 不是 String 类内置的方法,只是因为写了扩展
+
+  Person p = Person();
+  p.say(); // result: Say something
+  print(p.name); // result: 学生
+}
+
+// 扩展内置类
+extension StringExtension on String {
+  // 将字符串形式的数字,转成数字
+  parseInt() {
+    return int.parse(this);
+  }
+}
+
+// 自定义类
+class Person {
+  say() {
+    print('Say something');
+  }
+}
+
+//扩展自定义类
+extension studentExtension on Person {
+  // 扩展 Getter
+  get name => '学生';
+}
+
+```

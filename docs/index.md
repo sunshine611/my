@@ -29,4 +29,9 @@ features:
     icon:
       src: /images/dart_logo.png
     details: Dart是一种开源的通用编程语言，由Google开发并首次发布于2011年。它被设计为用于构建前端用户界面的高性能、结构化的代码。
+  - title: Flutter
+    link: /frontend/flutter/index
+    icon:
+      src: /images/flutter_logo.png
+    details: Flutter 是一个由 Google 开发并开源的 UI 工具包，用于从单一代码库构建跨平台的美观、原生速度的移动、Web 和桌面应用程序。
 ---
