@@ -29,6 +29,6 @@ onMounted(() => {
   z-index: 9999;
 }
 .zoom-img{
-  border-radius: 5px;
+  border-radius: 10px;
 }
 </style>

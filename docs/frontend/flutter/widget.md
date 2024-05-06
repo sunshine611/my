@@ -1094,13 +1094,13 @@ class ListViewHorizontal extends StatelessWidget {
 }
 ```
 
-<ZoomImg src="/images/flutter/ListView.png" title="ListView 展示效果"/>
-<div class="text-center mt-2">ListView 展示效果</div>
+<ZoomImg src="/images/flutter/ListView.png" title="ListView 展示效果1"/>
+<div class="text-center mt-2">ListView 展示效果1</div>
 
 ---
 
 ```dart:line-numbers
-// ListView.builder 和 ListView.separated
+// ListView.builder 和 ListView.separated 示例
 class ListViewDemo extends StatelessWidget {
   const ListViewDemo({super.key});
 
@@ -1185,3 +1185,228 @@ class ListViewSeparatedDemo extends StatelessWidget {
 }
 
 ```
+
+<ZoomImg src="/images/flutter/ListView_builder.png" title="ListView 展示效果2"/>
+<div class="text-center mt-2">ListView 展示效果2</div>
+
+---
+
+### GridView() - 网格布局
+
+- GridView
+  - children (子组件)
+  - scrollDirection (滚动方向)
+  - gridDelegate
+    - SliverGridDelegateWithFixedCrossAxisCount (指定列数 - 子组件宽度自适应)
+    - SliverGridDelegateWithMaxCrossAxisExtent (指定子组件宽度 - 列数自适应)
+- GridView.count (列数固定)
+- GridView.extend (子组件宽度固定)
+- GridView.builder (动态网格布局)
+
+---
+
+- **ScrollPhysice physice** (确定可滚动控件的物理特性)
+  - BouncingScrollPhysics (允许超出边界 - 反弹效果)
+  - ClampingScrollPhysics (防止超出边界 - 夹住效果)
+  - AlwaysScrollableScrollPhysics (始终响应滚动)(默认效果)
+  - NeverScrollableScrollPhysics (不响应滚动)
+
+<ZoomImg src="/images/flutter/GridView1.png" title="GridView 布局说明"/>
+<div class="text-center mt-2">GridView 布局说明</div>
+
+---
+
+```dart:line-numbers
+// GridView 示例
+class GridViewDemo extends StatelessWidget {
+  const GridViewDemo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          height: 500,
+          child: GridView(
+            padding: const EdgeInsets.all(20),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                // 指定列数
+                crossAxisCount: 3,
+                // 主轴方向的间距
+                mainAxisSpacing: 20,
+                // 交叉轴方向的间距
+                crossAxisSpacing: 20,
+                // 子组件宽高比,1就是正方形
+                childAspectRatio: 1),
+            children: [
+              Container(
+                color: Colors.blue,
+              ),
+              Container(
+                color: Colors.green,
+              ),
+              Container(
+                color: Colors.pink,
+              ),
+              Container(
+                color: Colors.purple,
+              ),
+              Container(
+                color: Colors.red,
+              ),
+              Container(
+                color: Colors.yellow,
+              )
+            ],
+          ),
+        ),
+        Container(
+          height: 500,
+          child: GridView(
+            padding: const EdgeInsets.all(20),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                // 指定子组件最大宽度
+                maxCrossAxisExtent: 300,
+                // 主轴方向的间距
+                mainAxisSpacing: 20,
+                // 交叉轴方向的间距
+                crossAxisSpacing: 20,
+                // 子组件宽高比,1就是正方形
+                childAspectRatio: 0.8),
+            children: [
+              Container(
+                color: Colors.blue,
+              ),
+              Container(
+                color: Colors.green,
+              ),
+              Container(
+                color: Colors.pink,
+              ),
+              Container(
+                color: Colors.purple,
+              ),
+              Container(
+                color: Colors.red,
+              ),
+              Container(
+                color: Colors.yellow,
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+```
+
+<ZoomImg src="/images/flutter/GridView2.png" title="GridView 展示效果1"/>
+<div class="text-center mt-2">GridView 展示效果1</div>
+
+---
+
+```dart:line-numbers
+// GridView.count 示例
+class GridViewCountDemo extends StatelessWidget {
+  const GridViewCountDemo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: GridView.count(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      crossAxisCount: 3,
+      mainAxisSpacing: 20,
+      crossAxisSpacing: 20,
+      childAspectRatio: 0.75,
+      children: List.generate(
+        20,
+        (index) => Image.asset('assets/img/product1.png', fit: BoxFit.cover),
+      ),
+    ));
+  }
+}
+```
+
+<ZoomImg src="/images/flutter/GridView3.png" title="GridView.count 展示效果"/>
+<div class="text-center mt-2">GridView.count 展示效果</div>
+
+---
+
+```dart:line-numbers
+// GridView.extent 示例
+class GridViewExtentDemo extends StatelessWidget {
+  const GridViewExtentDemo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: GridView.extent(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      maxCrossAxisExtent: 220,
+      mainAxisSpacing: 30,
+      crossAxisSpacing: 30,
+      childAspectRatio: 0.75,
+      children: List.generate(
+        20,
+        (index) => Image.asset('assets/img/product2.png', fit: BoxFit.cover),
+      ),
+    ));
+  }
+}
+```
+
+<ZoomImg src="/images/flutter/GridView4.png" title="GridView.extent 展示效果"/>
+<div class="text-center mt-2">GridView.extent 展示效果</div>
+
+---
+
+```dart:line-numbers
+// GridView.builder 示例
+class GridViewBuilderDemo extends StatelessWidget {
+  const GridViewBuilderDemo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        // 显示列数
+        crossAxisCount: 4,
+        // 竖的方向间距
+        crossAxisSpacing: 50,
+        // 横的方向间距
+        mainAxisSpacing: 50,
+        // 宽高比
+        childAspectRatio: 0.75,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      itemBuilder: (context, index) {
+        int i = (index % 5)+1;
+        return Image.asset('assets/img/product$i.png', fit: BoxFit.cover);
+      },
+    ));
+  }
+}
+```
+
+<ZoomImg src="/images/flutter/GridView5.png" title="GridView.builder 展示效果"/>
+<div class="text-center mt-2">GridView.builder 展示效果</div>
+
+---
+
+### SafeArea() - 安全区域
+
+- SafeArea
+  - 可以有效解决异形屏的问题
+
+## Cupertino - iOS 风格组件库
+
+- Material
+  - 安卓风格的组件库
+  - `import 'package:flutter/material.dart';`
+- Cupertino
+  - iOS 风格的组件库
+  - `import 'package:flutter/cupertino.dart';`
+  - https://docs.flutter.dev/ui/widgets/cupertino
