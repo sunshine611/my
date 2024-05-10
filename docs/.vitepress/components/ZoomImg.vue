@@ -4,7 +4,7 @@ import { withBase } from "vitepress";
 import { onMounted, ref } from "vue";
 import mediumZoom from "medium-zoom";
 
-defineProps({ src: String,title:String });
+defineProps({ src: String, title: String });
 
 const imgRef = ref();
 
@@ -14,21 +14,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <img ref="imgRef" :src="withBase(src)" :title="title" class="zoom-img"/>
+  <img ref="imgRef" :src="withBase(src)" :title="title" class="zoom-img" />
 </template>
 
 <style lang="scss">
 .medium-zoom-overlay {
   z-index: 9998;
-  top:0;
-  left:0;
-
+  top: 0;
+  left: 0;
 }
 
 .medium-zoom-image {
   z-index: 9999;
 }
-.zoom-img{
+.zoom-img {
   border-radius: 10px;
 }
 </style>

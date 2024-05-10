@@ -1396,6 +1396,111 @@ class GridViewBuilderDemo extends StatelessWidget {
 
 ---
 
+### DataTable() - 表格
+
+- DataTable 是 Flutter 中的表格
+  - columns (声明表头列表)
+    - DataColumn (表头单元格)
+  - rows (声明数据列表)
+    - DataRow (一行数据)
+      - DataCell (数据单元格)
+  - 其它属性
+
+```dart:line-numbers
+// DataTable 示例
+class DataTableDemo extends StatefulWidget {
+  const DataTableDemo({super.key});
+
+  @override
+  State<DataTableDemo> createState() => _DataTableDemoState();
+}
+
+class _DataTableDemoState extends State<DataTableDemo> {
+  // 基础数据
+  List<User> data = [
+    User('张三', 39),
+    User('李四', 20, selected: true),
+    User('王五', 22),
+    User('马超', 38)
+  ];
+
+  // 通过基础数据循环出表格行
+  List<DataRow> _getUserRows() {
+    List<DataRow> rows = [];
+    for (int i = 0; i < data.length; i++) {
+      rows.add(DataRow(
+        selected: data[i].selected!,
+        onSelectChanged: (selected) {
+          setState(() {
+            data[i].selected = selected!;
+          });
+        },
+        cells: [
+          DataCell(Text(data[i].name!)),
+          DataCell(Text(data[i].age.toString())),
+          DataCell(Text(data[i].selected! ? '男' : '女')),
+          DataCell(Text(data[i].selected! ? '张三是一个好人' : '张三不是一个好人')),
+        ],
+      ));
+    }
+    return rows;
+  }
+
+  bool _sortAscending = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        child: SizedBox(
+          height: 500,
+          child: DataTable(
+              sortColumnIndex: 1,
+              sortAscending: _sortAscending, // 排序是否可用
+              dataRowMinHeight: 60, // 最小行高
+              dataRowMaxHeight: 100, // 最大行高
+              horizontalMargin: 150, // 水平边距
+              columns: [
+                const DataColumn(label: Text('姓名')),
+                DataColumn(
+                  label: const Text('年龄'),
+                  numeric: true, // 可排序属性
+                  onSort: (int index, bool asscending) {
+                    setState(() {
+                      _sortAscending = asscending;
+                      if (asscending) {
+                        data.sort((a, b) => a.age!.compareTo(b.age!));
+                      } else {
+                        data.sort((a, b) => b.age!.compareTo(a.age!));
+                      }
+                    });
+                  }, // 排序的方法
+                ),
+                const DataColumn(label: Text('性别')),
+                const DataColumn(label: Text('简介')),
+              ],
+              rows: _getUserRows()),
+        ),
+      ),
+    );
+  }
+}
+
+// User类
+class User {
+  String? name;
+  int? age;
+  bool? selected;
+  User(this.name, this.age, {this.selected = false});
+}
+```
+
+<ZoomImg src="/images/flutter/DataTable.png" title="DataTable 展示效果"/>
+<div class="text-center mt-2">DataTable 展示效果</div>
+
+---
+
 ### SafeArea() - 安全区域
 
 - SafeArea
@@ -1410,3 +1515,34 @@ class GridViewBuilderDemo extends StatelessWidget {
   - iOS 风格的组件库
   - `import 'package:flutter/cupertino.dart';`
   - https://docs.flutter.dev/ui/widgets/cupertino
+
+## 第三方库
+
+### Dio
+
+- Dio 是一个强大的 Dart Http 请求库 (类似 axios)
+  - https://pub.dev/packages/dio
+- 使用步骤
+  - 在 pubsepc.yaml 中添加 dio 依赖
+  - 安装依赖 (pub get | flutter pub get)
+  - 引入 `import 'package:dio/dio.dart'`
+  - 使用指南: https://github.com/cfug/dio/blob/main/dio/README-ZH.md
+
+### shared_preferences
+
+- shared_preferences 是一个本地数据缓存库 (类似浏览器 LocalStorage)
+  - https://pub.dev/packages/shared_preferences
+- 使用步骤
+  - 在 pubspec.yaml 中添加 shared_preferences 依赖
+  - 安装依赖
+  - 引入 `import 'package:shared_preferences/shared_preferences.dart';`
+  - 使用 https://pub.dev/packages/shared_preferences/example
+
+### GetX
+
+- GetX: GetX 是 Flutter 上的一个轻量且强大的解决方案：高性能的状态管理、智能的依赖注入和便捷的路由管理。
+- GetX 有 3 个基本原则：
+  - 性能： GetX 专注于性能和最小资源消耗。GetX 打包后的 apk 占用大小和运行时的内存占用与其他状态管理插件不相上下。如果你感兴趣，这里有一个性能测试。
+  - 效率： GetX 的语法非常简捷，并保持了极高的性能，能极大缩短你的开发时长。
+  - 结构： GetX 可以将界面、逻辑、依赖和路由完全解耦，用起来更清爽，逻辑更清晰，代码更容易维护。
+- 文档: https://github.com/jonataslaw/getx/blob/master/README.zh-cn.md

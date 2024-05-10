@@ -134,3 +134,95 @@ flutter:
 <ZoomImg src="/images/flutter/font_effect.png" title="导入字体展示效果"/>
 <div class="text-center mt-2">导入字体展示效果</div>
 
+---
+
+## 状态管理
+
+- Flutter 中的组件, 按状态划分
+  - StatelessWidget (无状态组件)
+  - StetefulWidget (有状态组件)
+- 按状态作用域划分
+  - 组件内私有状态 (StatefulWidget)
+  - 跨组件状态共享 (InheritedWidget,Provider)
+  - 全局状态 (GetX 库)
+- 状态组件的组成
+  - StatefulWidget (组件本身不可变 - @immutable)
+  - State (将变化的状态放到 State 中维护)
+
+### StatefulWidget
+
+```dart:line-numbers
+// StatefulWidget 的状态管理示例
+class StatefulWidgetDemo extends StatefulWidget {
+  const StatefulWidgetDemo({super.key});
+
+  @override
+  State<StatefulWidgetDemo> createState() => _StatefulWidgetDemoState();
+}
+
+class _StatefulWidgetDemoState extends State<StatefulWidgetDemo> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  void _decrementCounter() {
+    setState(() {
+      if (_counter > 0) {
+        _counter--;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(50),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            onPressed: _decrementCounter,
+            icon: const Icon(
+              Icons.remove,
+              size: 30,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              _counter.toString(),
+              style: const TextStyle(fontSize: 30),
+            ),
+          ),
+          IconButton(
+            onPressed: _incrementCounter,
+            icon: const Icon(
+              Icons.add,
+              size: 30,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+<ZoomImg src="/images/flutter/StatefulWidget.png" title="StatefulWidget 展示效果"/>
+<div class="text-center mt-2">StatefulWidget 展示效果</div>
+
+---
+
+### InheritedWidget
+
+- What: 提供了**沿树向下,共享数据**的功能
+  - 即子组件可以获取父组件 (InheritedWidget 的子类) 的数据
+- Why: 依赖构造函数传递数据的方式不能满足业务需求, 所以需要一个新的, 更好的跨组件数据传输方案
+- How: `BuildContext.dependOnInheritedWidgetOfExactType<MyInheritedWidget>()`
+
+<ZoomImg src="/images/flutter/Inherited1.png" title="Inherized 传参"/>
+<div class="text-center mt-2">Inherized 传参</div>
