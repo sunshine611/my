@@ -1506,6 +1506,239 @@ class User {
 - SafeArea
   - 可以有效解决异形屏的问题
 
+### Switch() - 开关
+
+- Switch
+  - value (开关的值, 一般与状态字段绑定)
+  - onChanged (开关状态变更时调用)
+  - activeColor (开关开启时的圆圈颜色)
+  - activeTrackColor (开关开始时的轨道颜色)
+  - inactiveThumbColor (开关关闭时的圆圈颜色)
+  - inactiveTrackColor (开关关闭时的轨道颜色)
+- CupertinoSwitch (iOS 风格的开关)
+
+### Checkbox() - 复选框
+
+- Checkbox
+  - value (复选框的值)
+  - onChanged (复选框状态更改时调用)
+  - acitveColor (选中时,复选框背景的颜色)
+  - checkColor (选中时,复选框中对号的颜色)
+- CheckboxListTile (对 ListTile 的封装)
+  - title (标题)
+  - subtitle (子标题)
+
+### Radio() - 单选框
+
+- Radio
+  - value (开关的值, 一般与状态字段绑定)
+  - onChanged (开关状态变更时调用)
+  - **groupValue (选择组的值)**
+- RadioListTile (单选列表)
+  - value (开关的值, 一般与状态字段绑定)
+  - onChanged (开关状态变更时调用)
+  - **groupValue (选择组的值)**
+
+### TextField() - 文本框
+
+- TextField
+  - autofocus (是否自动获取焦点)
+  - keyboardType (键盘类型)
+  - obscureText (设置为密码框)
+  - decoration (样式修饰)
+  - onChanged (内容更改时自动调用-value)
+  - labelText (标题)
+  - hintText (提示文字-placeholder)
+  - maxLines (显示行数-文本域)
+
+### CalendarDatePicker() - 日历选择器
+
+- CalendarDatePicker (日历选择器)
+  - initialCalendarMode
+    - DatePickerMOde.day
+    - DatePickerMOde.year
+- showDatePicker (日期选择器)
+  - initialDatePickerMode (year | day)
+  - initialEntryMode (calendar | input)
+- showTimePicker (时间选择器)
+
+### Form() - 表单
+
+- 使用步骤
+  - 创建表单 Form, 并以 **GlobalKey** 作为唯一性标识
+  - 添加带验证逻辑的 TextFormField 到 Form 中
+  - 创建按钮以验证和提交表单
+- Form (表单容器)
+  - 创建表单唯一键: `final GlobalKey<FormState> formKey = GlobalState<FormState>();`
+  - 验证表单: `formKey.currentState.validate();`
+  - 提交表单: `formKey.currentState.save();`
+  - 重置表单: `formKey.currentState.reset();`
+- TextFormField (输入框)
+  - 与 TextField 的区别: 必须在 Form 内使用, 带有验证器
+  - validator (验证器)
+  - obscureText (密码框)
+  - onSaved
+    - 设置表单字段的值
+    - 在表单的 save() 方法之后执行
+
+```dart
+// 表单验证示例代码一
+class FormDemo extends StatefulWidget {
+  const FormDemo({super.key});
+
+  @override
+  State<FormDemo> createState() => _FormDemoState();
+}
+
+class _FormDemoState extends State<FormDemo> {
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(30),
+      child: Column(
+        children: [
+          Form(
+            key: formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: '手机号',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '手机号不能为空';
+                    }
+                    RegExp reg = RegExp(r'^\d{11}$');
+                    if (!reg.hasMatch(value)) {
+                      return '手机号不正确';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      print('验证通过');
+                    } else {
+                      print('验证不通过');
+                    }
+                  },
+                  child: const Text('提交'),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+```
+
+<ZoomImg src="/images/flutter/Form1.png" title="Form 展示效果"/>
+<div class="text-center mt-2">Form 展示效果</div>
+
+---
+
+```dart
+// 表单验证示例代码二
+class FormDemo extends StatefulWidget {
+  const FormDemo({super.key});
+
+  @override
+  State<FormDemo> createState() => _FormDemoState();
+}
+
+class _FormDemoState extends State<FormDemo> {
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  String? phone;
+  String? password;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(30),
+      child: Column(
+        children: [
+          Form(
+            key: formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: '手机号',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '手机号不能为空';
+                    }
+                    RegExp reg = RegExp(r'^\d{11}$');
+                    if (!reg.hasMatch(value)) {
+                      return '手机号不正确';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    phone = value;
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: '密码',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '密码不能为空';
+                    }
+                    if (value.length < 6) {
+                      return '密码长度不能小于6位';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    password = value;
+                  },
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          // 提交表单
+                          formKey.currentState!.save();
+                        } else {
+                          print('验证不通过');
+                        }
+                      },
+                      child: const Text('提交'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        // 重置表单
+                        formKey.currentState!.reset();
+                      },
+                      child: const Text('重置'),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+```
+
+<ZoomImg src="/images/flutter/Form2.png" title="Form 展示效果"/>
+<div class="text-center mt-2">Form 展示效果</div>
+
 ## Cupertino - iOS 风格组件库
 
 - Material
@@ -1546,3 +1779,101 @@ class User {
   - 效率： GetX 的语法非常简捷，并保持了极高的性能，能极大缩短你的开发时长。
   - 结构： GetX 可以将界面、逻辑、依赖和路由完全解耦，用起来更清爽，逻辑更清晰，代码更容易维护。
 - 文档: https://github.com/jonataslaw/getx/blob/master/README.zh-cn.md
+
+### Provider
+
+- Provider 是对 InheritedWidget 的封装
+  - https://pub.dev/packages/provider
+- 优点
+  - 简化资源的分配与处置
+  - 懒加载
+- Provider 的工作原理
+
+<ZoomImg src="/images/flutter/provider1.png" title="Provider 的工作原理1"/>
+<div class="text-center mt-2">Provider 的实现原理1</div>
+
+---
+
+<ZoomImg src="/images/flutter/provider2.png" title="Provider 的工作原理2"/>
+<div class="text-center mt-2">Provider 的实现原理2</div>
+
+---
+
+<ZoomImg src="/images/flutter/provider3.png" title="Provider 使用"/>
+<div class="text-center mt-2">Provider 的使用</div>
+
+---
+
+```dart:line-numbers
+// Provider 代码示例
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+      ),
+      // 2. 使用 ChangeNotifierProvider 包裹根组件, 并传入数据模型
+      home: ChangeNotifierProvider(
+        create: (context) => LikesModel(),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Provider'),
+          ),
+          body: const ProviderDemo(),
+        ),
+      ),
+    );
+  }
+}
+
+// 1. 创建数据模型
+class LikesModel extends ChangeNotifier {
+  int _counter = 0;
+
+  int get counter => _counter;
+
+  incrementCounter() {
+    // 累加
+    _counter++;
+
+    // 通知 UI 更新
+    notifyListeners();
+  }
+}
+
+class ProviderDemo extends StatelessWidget {
+  const ProviderDemo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        children: [
+          // 3. 在子组件中使用数字模型
+          Text('${context.watch<LikesModel>().counter}'),
+          TextButton(
+            onPressed: () => context.read<LikesModel>().incrementCounter(),
+            child: const Icon(Icons.thumb_up),
+          )
+        ],
+      ),
+    );
+  }
+}
+```
+
+<ZoomImg src="/images/flutter/provider4.png" title="Provider 示例效果"/>
+<div class="text-center mt-2">Provider 示例效果</div>
+
+---

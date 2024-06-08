@@ -87,7 +87,7 @@ export default defineConfig({
             link: "/frontend/flutter/index",
             collapsed: true,
             items: [
-              { text: "初始化项目", link: "/frontend/flutter/base" },
+              { text: "Flutter基础", link: "/frontend/flutter/base" },
               { text: "部件 (Widget)", link: "/frontend/flutter/widget" },
             ],
           },
