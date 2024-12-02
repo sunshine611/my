@@ -108,6 +108,15 @@ ch <- func(name string) string{
 }
 ```
 
+## 递归函数
+
+简单来说,递归就是函数自己调用自己,有 2 种思想方式:一种是直接在自己函数中调用自己,一种是间接在自己函数中调用的其它函数中调用了自己.
+
+- 递归函数需要有边界条件、递归前进段、递归返回段
+- 递归一定要有**边界条件**
+- 当边界条件不满足时,递归前进
+- 当边界条件满足时,递归返回
+
 ## 闭包
 
 - 闭包(Closure)是引用了自由变量的函数
@@ -141,6 +150,7 @@ func main() {
 - 如果同一个函数里有多个 defer，则后注册的先执行
 - defer 后可以跟一个 func，func 内部如果发生 panic，会把 panic 暂时搁置，当把其它 defer 执行完之后再执行这个 panic
 - defer 后不是跟 func，而直接跟一条执行语句，则相关变量在注册 defer 时被拷贝或计算
+- 遇到 os.Exit() 直接结束,不执行 defer 语句
 
 ```go
 func basic(){
@@ -152,6 +162,39 @@ func basic(){
 }
 func main(){
     basic() //输出顺序：A C 2 1 B
+}
+```
+
+- 函数调用、注册、注册的计算、defer 注册时必须把**实参**固定下来
+
+```go
+// 运行结果: start end 3 2 1
+func main(){
+    count := 1
+    fmt.Println("start")
+    defer fmt.Println(count)
+    count++
+    defer fmt.Println(count)
+    count++
+    defer fmt.Println(count)
+    fmt.Println("end")
+}
+```
+
+```go
+// 运行结果: start end 3 2 3
+func main(){
+    count := 1
+    fmt.Println("start")
+    // 因为这是一个无参函数,没有实参,所以里面的 count 不需要固定下来
+    defer func(){
+        fmt.Println(count)
+    }()
+    count++
+    defer fmt.Println(count)
+    count++
+    defer fmt.Println(count)
+    fmt.Println("end")
 }
 ```
 
@@ -245,7 +288,7 @@ func (err PathError) Error() string{
 ### recover
 
 - recover 会阻断 panic 的执行
- 
+
 ```go
 func soo(a,b int){
     defer func(){
@@ -255,5 +298,26 @@ func soo(a,b int){
         }
     }()
     panic(errors.New("my error"))
+}
+```
+
+## 系统函数
+
+### fmt
+
+- **Scan:** 控制台输入
+
+```go
+func main{
+    var (
+		name string
+		age  int
+	)
+	n, err := fmt.Scan(&name, &age) // 必须传入指针才能获取输入的值,返回值n为输入的个数,err为错误信息
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Println(n, name, age)
+	}
 }
 ```

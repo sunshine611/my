@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "学习笔记"
+  name: "六陽笔记"
   tagline: 在我日常的编程冒险中，用笔记录下那些让我眉头紧锁的难题，以及那些让我豁然开朗的知识点。
   # actions:
   #   - theme: brand

@@ -147,21 +147,83 @@ func main() {
 |   /=   | 相除后再赋值     |   ^=   | 按位异或后赋值 |
 |   %=   | 求余后再赋值     |   -    | -              |
 
-## 变量类型
+## 变量类型格式化输出
 
-|     类型     |                        go 变量类型                         | fmt 输出 |
-| :----------: | :--------------------------------------------------------: | :------: |
-|     整形     | int int8 int16 int32 int64 uint uint8 uint16 uint32 uint64 |    %d    |
-|    浮点型    |                      float32 float64                       | %f %e %g |
-|     复数     |                    complex128 complex64                    |    %v    |
-|    布尔型    |                            bool                            |    %t    |
-|     指针     |                          uintptr                           |  %d %p   |
-|     引用     |                     map slice channel                      |    %v    |
-|     字节     |                            byte                            |    %d    |
-|   任意字符   |                            rune                            |    %d    |
-|    字符串    |                           string                           |    %s    |
-|     错误     |                           error                            |    %v    |
-| 检测数据类型 |                                                            |    %V    |
+- 在 Go 语言中，fmt.Printf 函数用于格式化输出。Printf 支持多种格式化动词，用于将不同类型的数据格式化为字符串并输出。以下是一些常用的格式化动词及其对应的数据类型：
+
+**通用格式化动词**
+
+- %v：默认格式的值
+- %+v：类似于 %v，但会在结构体字段名前加上字段名
+- %#v：Go 语法格式表示的值
+- %T：值的类型的 Go 语法表示
+- %%：百分号本身
+
+**布尔类型**
+
+- %t：单词 true 或 false
+
+**整数类型**
+
+- %b：二进制表示
+- %c：相应 Unicode 码点表示的字符
+- %d：十进制表示
+- %o：八进制表示
+- %O：带有前缀 0o 的八进制表示（Go 1.13+）
+- %x：十六进制表示，使用 a-f
+- %X：十六进制表示，使用 A-F
+- %U：Unicode 格式：U+1234，等同于 "U+%04X"
+- %q：单引号围绕的字符字面值，必要时使用转义字符
+
+**浮点数和复数的组成部分（实数和虚数）**
+
+- %b：无小数部分的科学计数法（指数为二进制表示的指数）
+- %e：科学计数法，例如 -1234.456e+78
+- %E：科学计数法，例如 -1234.456E+78
+- %f：有小数部分但无指数部分，例如 123.456
+- %F：等同于 %f
+- %g：根据实际情况采用 %e 或 %f 格式（以获得更简洁的输出）
+- %G：根据实际情况采用 %E 或 %F 格式（以获得更简洁的输出）
+
+**字符串和字节切片**
+
+- %s：字符串或切片的无解译字节
+- %q：双引号围绕的字符串字面值，必要时使用转义字符
+- %x：每个字节用两字符十六进制数表示（使用 a-f）
+- %X：每个字节用两字符十六进制数表示（使用 A-F）
+
+**指针**
+
+- %p：十六进制表示，带有前缀 0x
+
+```go
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    boolVal := true
+    intVal := 123
+    floatVal := 123.456
+    strVal := "hello"
+    ptrVal := &intVal
+
+    fmt.Printf("bool: %t\n", boolVal)
+    fmt.Printf("int (decimal): %d\n", intVal)
+    fmt.Printf("int (binary): %b\n", intVal)
+    fmt.Printf("float: %f\n", floatVal)
+    fmt.Printf("string: %s\n", strVal)
+    fmt.Printf("pointer: %p\n", ptrVal)
+
+    // 其他示例
+    fmt.Printf("struct: %+v\n", struct{ Name string }{"Go"})
+    fmt.Printf("type: %T\n", intVal)
+	// format其它快捷写法,[1] 表示 Printf 的第二个参数,索引1
+	fmt.Printf("%T %[1]d\n",intVal)
+}
+```
 
 ## 变量初始化
 
@@ -262,7 +324,7 @@ func main() {
 
 ## 变量作用域
 
-- 全局变量，大写字母开头，所有地方都可以访问，跨 package 访问时需要带上 package 名称
+- 包级全局变量，大写字母开头，所有地方都可以访问，跨 package 访问时需要带上 package 名称
 - 全局变量，小写字母开头，仅本 package 内都可以访问
 - 局部变量，仅本函数内可以访问，内部声明的变量可以跟外部声明的变量有冲突，以内部的优先级更高，内部对 b 的修改不影响外部的 b 的值
 - 仅函数内部可以使用:=快速定义变量，全局定义变量必须使用 var/const 定义。

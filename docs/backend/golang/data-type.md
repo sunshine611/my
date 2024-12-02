@@ -48,6 +48,59 @@ func main() {
 }
 ```
 
+### 指针
+
+- 指针的声明：
+
+  - 使用 & 号获取一个变量的地址(相当于在内存中的门牌号)
+  - 使用 \* 号表示一个变量是指针类型(相当于获取在内存中门牌号房间里面的具体内容)
+
+- 指针的使用：
+  - 指针变量保存了另一个变量的内存地址。
+  - 通过指针可以间接地访问或修改变量的值。
+
+:::code-group
+
+```go [main.go]
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	// 声明一个普通变量
+	var a int = 10
+	// 声明一个指针变量，指向变量 a 的地址
+	var p *int = &a
+
+	// 打印变量 a 的值和地址
+	fmt.Println("Value of a:", a)
+	fmt.Println("Address of a:", &a)
+
+	// 打印指针 p 的值和指向的地址
+	fmt.Println("Value of p (address of a):", p)
+	// 使用 * 操作符访问指针指向的值
+	fmt.Println("Value at the address pointed by p:", *p)
+
+	// 修改指针指向的变量的值
+	*p = 20
+	// 现在变量 a 的值也被改变了
+	fmt.Println("New value of a:", a)
+}
+
+```
+
+```less [console]
+Value of a: 10
+Address of a: 0xc000018088
+Value of p (address of a): 0xc000018088
+Value at the address pointed by p: 10
+New value of a: 20
+```
+
+:::
+
 ## 复合数据类型
 
 |   类型    | 默认值 | 说明         |
@@ -97,6 +150,148 @@ func main() {
 	a.Say() //33
 	b = ms{"no": 99}
 	b.Say() //0
+}
+```
+
+## 随机数
+
+- 在 Go 语言中，可以使用 math/rand 包生成随机数。math/rand 包提供了多种生成随机数的方法，支持生成随机整数、浮点数以及伪随机数的种子设置。
+
+### 生成随机整数
+
+```go
+package main
+
+import (
+    "fmt"
+    "math/rand"
+    "time"
+)
+
+func main() {
+    // 设置随机种子
+    rand.Seed(time.Now().UnixNano())
+
+    // 生成 0 到 99 之间的随机整数
+    randomInt := rand.Intn(100)
+    fmt.Println("Random Integer:", randomInt)
+}
+```
+
+### 生成随机浮点数
+
+```go
+package main
+
+import (
+    "fmt"
+    "math/rand"
+    "time"
+)
+
+func main() {
+    // 设置随机种子
+    rand.Seed(time.Now().UnixNano())
+
+    // 生成 0.0 到 1.0 之间的随机浮点数
+    randomFloat := rand.Float64()
+    fmt.Println("Random Float:", randomFloat)
+}
+
+```
+
+### 生成特定范围内的随机整数
+
+```go
+package main
+
+import (
+    "fmt"
+    "math/rand"
+    "time"
+)
+
+func main() {
+    // 设置随机种子
+    rand.Seed(time.Now().UnixNano())
+
+    // 生成 10 到 20 之间的随机整数
+    randomInt := rand.Intn(11) + 10
+    fmt.Println("Random Integer between 10 and 20:", randomInt)
+}
+```
+
+### 生成随机序列
+
+```go
+package main
+
+import (
+    "fmt"
+    "math/rand"
+    "time"
+)
+
+func main() {
+    // 设置随机种子
+    rand.Seed(time.Now().UnixNano())
+
+    // 生成一个随机的整数序列
+    for i := 0; i < 5; i++ {
+        fmt.Println("Random Integer:", rand.Intn(100))
+    }
+}
+```
+
+### 使用随机种子
+
+```go
+package main
+
+import (
+    "fmt"
+    "math/rand"
+)
+
+func main() {
+    // 设置固定随机种子
+    rand.Seed(42)
+
+    // 生成相同的随机数序列
+    for i := 0; i < 5; i++ {
+        fmt.Println("Random Integer:", rand.Intn(100))
+    }
+}
+```
+
+### 生成随机字符串
+
+```go
+package main
+
+import (
+    "fmt"
+    "math/rand"
+    "time"
+)
+
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+func randString(n int) string {
+    b := make([]byte, n)
+    for i := range b {
+        b[i] = letterBytes[rand.Intn(len(letterBytes))]
+    }
+    return string(b)
+}
+
+func main() {
+    // 设置随机种子
+    rand.Seed(time.Now().UnixNano())
+
+    // 生成随机字符串
+    randomStr := randString(10)
+    fmt.Println("Random String:", randomStr)
 }
 ```
 
@@ -189,7 +384,7 @@ var arr8 = [...][3]int{{1},{2,3}} //第1维可以用...推测，第2维不能用
 - 通过 index 访问
   - 首元素 `arr[0]`
   - 末元素 `arr[len(arr)-1]`
-- 访问二位数组里的元素
+- 访问二维数组里的元素
   - 位于第三行第四列的元素 `arr[2][3]`
 
 ### 遍历数组
@@ -244,6 +439,11 @@ func main() {
 
 在 Go 语言中，切片（slice）是一个引用类型，它提供了访问数组子序列（即数组的连续段）的功能。切片不存储任何数据，它只是对现有数组的引用。切片的定义和使用非常灵活，它是 Go 中处理序列数据的核心类型之一。
 
+### 切片底层原理
+
+- 切片底层就只有三个属性,分别是 array 的指针,len 是切片内元素的长度,cap 是切片容器的大小
+- 切片本质是标头值(Header),重新赋值给自己的时候,标头值的指针不会变;但赋值给新的变量的时候,标头值会变化,但底层的 array 指针不会变.除非 array 发生了扩容,那底层的 array 会重新开辟一块空间,把内容复制过去,从此新的变量和旧的变量分道扬镳了.
+
 ```go:line-numbers
 var s []int	//切片声明，len=cap=0
 s = []int{}	//初始化，len=cap=0
@@ -278,13 +478,19 @@ func main() {
 }
 ```
 
-### 截取子切片
+### 截取子切片 (slice)
 
 - `s := make([]int,3,5)` //len=3,cap=5 `sub_slice = s[1:3]` //len=2,cap=4
 - 刚开始，子切片和母切片共享底层的内存空间，修改子切片会反映到母切片上。
 - 在子切片上执行 append 会在子元素后面附加新元素，假如此时子元素对应的母元素的位置有值，会被替换，母子元素内存还未分离。
 - 子元素对应的母元素的位置没有值，但是母元素还有预留内存空间的时候， 在子切片上执行 append 会接着占用母元素预留的内存空间，因为此时母子元素内存还未分离。
 - 当子切片不断执行 append，耗完了母切片预留的内存空间，子切片跟母切片就会发生内存分离，此后两个切片没用任何关系，但是之前被修改的母元素还是被修改后的样子。
+- `slice[start:end]`
+  - start 索引是 0 开始,end 索引是 1 开始
+  - end - start 是切片的长度
+  - start <= end
+  - end 不写默认是 len(slice)的长度
+  - end 最大可以是 cap(slice)的长度
 
 ```go:line-numbers
 //截取切片
@@ -335,7 +541,14 @@ func main() {
 
 ## map 键值对
 
-go map 的底层实现是 hash table，根据 key 查找 value 的时间复杂度时 O(1)
+- go map 的底层实现是 hash table，根据 key 查找 value 的时间复杂度时 O(1)
+  - 长度可变
+  - 存储的元素是 key-value 键值对
+  - key 无序不重复
+  - 不可索引, 需要通过 key 来访问
+  - **不支持零值可用**,也就是说,声明得要赋值声明
+  - 引用类型
+  - 哈希表
 
 ### map 的声明
 
