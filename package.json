@@ -9,7 +9,7 @@
     "vue:preview": "vite preview",
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "preview": "vitepress preview docs"
   },
   "dependencies": {
     "medium-zoom": "^1.1.0",

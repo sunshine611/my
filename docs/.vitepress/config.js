@@ -123,6 +123,10 @@ export default defineConfig({
                 link: "/backend/golang/interface",
               },
               {
+                text: "序列化",
+                link: "/backend/golang/serialization",
+              },
+              {
                 text: "Go常用命令",
                 link: "/backend/golang/command",
               },
@@ -146,9 +150,13 @@ export default defineConfig({
         ],
       },
     ],
-    socialLinks: [
-      { icon: "github", link: "https://github.com/sunshine611/my" },
-    ],
+    socialLinks: [{ icon: "github", link: "https://github.com/sunshine611/my" }],
   },
   cleanUrls: false,
+  vite: {
+    server: {
+      port: 3000,
+      open: true,
+    },
+  },
 });
