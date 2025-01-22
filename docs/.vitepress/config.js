@@ -37,16 +37,11 @@ export default defineConfig({
         ],
       },
       {
-        text: "Interview",
+        text: "Server",
         items: [
           {
-            text: "Frontend",
-            items: [
-              {
-                text: "HTML",
-                link: "/interview/frontend/html",
-              },
-            ],
+            text: "Jenkins",
+            link: "/server/jenkins/index",
           },
         ],
       },
@@ -135,15 +130,21 @@ export default defineConfig({
         ],
       },
       {
-        text: "Interview",
-        collapsed: true,
+        text: "Server",
+        collapsed: false,
         items: [
           {
-            text: "Frontend",
+            text: "Jenkins",
+            link: "/server/jenkins/index",
+            collapsed: true,
             items: [
               {
-                text: "HTML",
-                link: "/interview/frontend/html",
+                text: "安装",
+                link: "/server/jenkins/install",
+              },
+              {
+                text: "使用",
+                link: "/server/jenkins/use",
               },
             ],
           },
