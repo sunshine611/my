@@ -21,7 +21,7 @@ pipeline {
                 sh 'rm -rf dist || true'
                 sh 'npm run build'
                 sh 'rm -rf ${DEPLOY_DIR}/* || true'  
-                sh 'cp -r dist/* ${DEPLOY_DIR}'  
+                sh 'cp -r docs/.vitepress/dist/* ${DEPLOY_DIR}'  
             }
         }
     }

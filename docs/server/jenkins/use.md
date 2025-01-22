@@ -94,3 +94,8 @@ pipeline {
 1. 新建任务,任务名字就按 github 仓库名字填写好了,新建一个多分支流水线
 2. 分支源选择 github,然后凭据就选择刚刚添加好的凭据,把仓库地址复制上去,其它一般默认即可,点击保存,就会自动扫描仓库了.
 3. 如果配置都没问题的话,后面每次 push 代码到 github,就会自动部署.
+
+<ZoomImg src="/images/jenkins/add_task.png" title="新增多分支流水任务"/>
+<div class="text-center mt-2">新增多分支流水任务</div>
+
+---
