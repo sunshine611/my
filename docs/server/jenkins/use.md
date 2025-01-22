@@ -99,3 +99,6 @@ pipeline {
 <div class="text-center mt-2">新增多分支流水任务</div>
 
 ---
+
+<ZoomImg src="/images/jenkins/auto_deploy.png" title="自动部署成功"/>
+<div class="text-center mt-2">自动部署成功</div>
