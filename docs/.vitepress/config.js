@@ -122,6 +122,14 @@ export default defineConfig({
                 link: "/backend/golang/serialization",
               },
               {
+                text: "常用标准库",
+                link: "/backend/golang/library",
+              },
+              {
+                text: "包管理",
+                link: "/backend/golang/package",
+              },
+              {
                 text: "Go常用命令",
                 link: "/backend/golang/command",
               },
