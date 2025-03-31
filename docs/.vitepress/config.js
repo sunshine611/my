@@ -133,6 +133,10 @@ export default defineConfig({
                 text: "Go常用命令",
                 link: "/backend/golang/command",
               },
+              {
+                text: "数据库交互",
+                link: "/backend/golang/sql",
+              },
             ],
           },
         ],
