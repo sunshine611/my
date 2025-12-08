@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        nodejs 'NodeJS 20.19.3'
+        nodejs 'NodeJS 20.21.1'
     }
     environment{
         DEPLOY_DIR = '/var/sites/lydoc.me/index' // 部署目录
