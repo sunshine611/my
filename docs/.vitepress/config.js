@@ -1,5 +1,6 @@
 import { defineConfig } from "vitepress";
 import mediumZoom from "medium-zoom";
+import tailwindcss from "@tailwindcss/postcss";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -170,6 +171,13 @@ export default defineConfig({
     server: {
       port: 3000,
       open: true,
+    },
+    css: {
+      postcss: {
+        plugins: [
+          tailwindcss(),
+        ],
+      },
     },
   },
 });
