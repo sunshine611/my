@@ -41,6 +41,10 @@ export default defineConfig({
         text: "Server",
         items: [
           {
+            text: "PostgreSQL",
+            link: "/server/postgresql/index",
+          },
+          {
             text: "Jenkins",
             link: "/server/jenkins/index",
           },
@@ -147,6 +151,12 @@ export default defineConfig({
         collapsed: false,
         items: [
           {
+            text: "PostgreSQL",
+            link: "/server/postgresql/index",
+            collapsed: true,
+            items: [{ text: "介绍", link: "/server/postgresql/index" }],
+          },
+          {
             text: "Jenkins",
             link: "/server/jenkins/index",
             collapsed: true,
@@ -174,9 +184,7 @@ export default defineConfig({
     },
     css: {
       postcss: {
-        plugins: [
-          tailwindcss(),
-        ],
+        plugins: [tailwindcss()],
       },
     },
   },
