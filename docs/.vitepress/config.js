@@ -154,7 +154,10 @@ export default defineConfig({
             text: "PostgreSQL",
             link: "/server/postgresql/index",
             collapsed: true,
-            items: [{ text: "介绍", link: "/server/postgresql/index" }],
+            items: [
+              { text: "介绍", link: "/server/postgresql/index" },
+              { text: "SQL语法", link: "/server/postgresql/sql" },
+            ],
           },
           {
             text: "Jenkins",

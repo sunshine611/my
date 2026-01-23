@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "六陽笔记"
-  tagline: 在我日常的编程冒险中，用笔记录下那些让我眉头紧锁的难题，以及那些让我豁然开朗的知识点。
+  tagline: 好记性不如好文档
   # actions:
   #   - theme: brand
   #     text: Home
