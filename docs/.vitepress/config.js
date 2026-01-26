@@ -156,7 +156,7 @@ export default defineConfig({
             collapsed: true,
             items: [
               { text: "介绍", link: "/server/postgresql/index" },
-              { text: "SQL语法", link: "/server/postgresql/sql" },
+              { text: "SQL查询语法", link: "/server/postgresql/sql-select" },
             ],
           },
           {
