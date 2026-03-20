@@ -4,10 +4,9 @@
 [https://github.com/dongxuyang1985/postgresql_dev_guide](https://github.com/dongxuyang1985/postgresql_dev_guide)
 :::
 
-
 ### 基本查询
 
-#### 查询所有字段 *
+#### 查询所有字段 \*
 
 从 employees 表中选择所有列的所有数据
 
@@ -152,10 +151,10 @@ SELECT * FROM employees WHERE salary IN (10000, 12000);
 
 **LIKE** 用于**模糊匹配**字符串，支持通配符。
 
-| 通配符 | 含义 | 示例 | 匹配结果 |
-| :----: | :--: | :--: | :------: |
-| `%` | 匹配**任意多个字符**（0个或多个） | `S%` | Smith, Sam, Steven, S |
-| `_` | 匹配**单个字符**（恰好1个） | `S_m` | Sam, Sim, Sum |
+| 通配符 |               含义                | 示例  |       匹配结果        |
+| :----: | :-------------------------------: | :---: | :-------------------: |
+|  `%`   | 匹配**任意多个字符**（0个或多个） | `S%`  | Smith, Sam, Steven, S |
+|  `_`   |    匹配**单个字符**（恰好1个）    | `S_m` |     Sam, Sim, Sum     |
 
 ```sql
 -- 查询 S 开头的 first_name 字段
@@ -196,11 +195,13 @@ SELECT first_name FROM employees WHERE first_name NOT LIKE 'S%';
 
 ::: info 什么是 NULL？
 **NULL** 是一个特殊值，表示：
+
 - 不存在的值
 - 未知的值
 - 未赋值的状态
 
 **NULL 不等于：**
+
 - ❌ 空字符串 ''
 - ❌ 数字 0
 - ❌ 布尔值 false
@@ -233,7 +234,7 @@ SELECT * FROM employees WHERE manager_id IS NOT DISTINCT FROM NULL;
 3. 比较运算符 `=`, `!=`, `>`, `<` 等
 4. `AND`
 5. `OR`
-:::
+   :::
 
 #### AND 查询
 
@@ -441,9 +442,10 @@ FETCH FIRST 10 ROWS WITH TIES;
 **OFFSET + FETCH FIRST** 的组合，用于**分页查询**。
 
 ::: warning 注意
+
 - 语法顺序必须是：**ORDER BY → OFFSET → FETCH**
 - **OFFSET 越大，性能越差**
-:::
+  :::
 
 ```sql
 SELECT first_name, last_name, salary
@@ -469,8 +471,9 @@ OFFSET 10;
 #### COUNT, SUM, AVG, MAX, MIN
 
 聚合函数的特点：
+
 - **多行输入，一行输出** - 把多行数据聚合成一个结果
-- **自动忽略 NULL** - COUNT(*) 除外
+- **自动忽略 NULL** - COUNT(\*) 除外
 - **通常与 GROUP BY 配合** - 可以分组聚合
 
 ```sql
@@ -522,6 +525,7 @@ SELECT STRING_AGG(first_name, '-' ORDER BY first_name) FROM employees;
 :::
 
 **关键理解：**
+
 - **没有 GROUP BY**：聚合函数对**整个表**计算（返回 1 行）
 - **有 GROUP BY**：聚合函数对**每个组**分别计算（返回 N 行，N = 组数）
 
@@ -576,9 +580,10 @@ GROUP BY 1, 2;
 **HAVING** 子句，用于**分组后过滤**。
 
 ::: tip WHERE 与 HAVING 的区别
+
 - **WHERE** - 在分组前过滤行
 - **HAVING** - 在分组后过滤组
-:::
+  :::
 
 - **SELECT department_id, COUNT(\*)** - 选择部门和人数
 - **FROM employees** - 从 employees 表
@@ -646,7 +651,8 @@ GROUP BY ROLLUP (item,year);
 #### COALESCE
 
 **COALESCE 的作用**
-**COALESCE** 
+**COALESCE**
+
 - 返回参数列表中的**第一个非 NULL 值**。
 
 ```sql
@@ -724,17 +730,17 @@ GROUP BY ROLLUP (item,year)
 
 **ON** 指定**连接条件**，通常是两个表的**公共列**
 
-| 写法 | 全称 | 说明 |
-|------|------|------|
-| JOIN | INNER JOIN | 只返回匹配的行（默认） |
-| INNER JOIN | INNER JOIN | 同上（完整写法） |
-| LEFT JOIN | LEFT OUTER JOIN | 保留左表所有行 |
-| LEFT OUTER JOIN | LEFT OUTER JOIN | 同上（完整写法） |
-| RIGHT JOIN | RIGHT OUTER JOIN | 保留右表所有行 |
-| RIGHT OUTER JOIN | RIGHT OUTER JOIN | 同上（完整写法） |
-| FULL JOIN | FULL OUTER JOIN | 保留两表所有行 |
-| FULL OUTER JOIN | FULL OUTER JOIN | 同上（完整写法） |
-| CROSS JOIN | CROSS JOIN | 笛卡尔积 |
+| 写法             | 全称             | 说明                   |
+| ---------------- | ---------------- | ---------------------- |
+| JOIN             | INNER JOIN       | 只返回匹配的行（默认） |
+| INNER JOIN       | INNER JOIN       | 同上（完整写法）       |
+| LEFT JOIN        | LEFT OUTER JOIN  | 保留左表所有行         |
+| LEFT OUTER JOIN  | LEFT OUTER JOIN  | 同上（完整写法）       |
+| RIGHT JOIN       | RIGHT OUTER JOIN | 保留右表所有行         |
+| RIGHT OUTER JOIN | RIGHT OUTER JOIN | 同上（完整写法）       |
+| FULL JOIN        | FULL OUTER JOIN  | 保留两表所有行         |
+| FULL OUTER JOIN  | FULL OUTER JOIN  | 同上（完整写法）       |
+| CROSS JOIN       | CROSS JOIN       | 笛卡尔积               |
 
 #### JOIN (INNER JOIN)
 
@@ -902,3 +908,99 @@ CROSS JOIN generate_series(1,9) t2
 <div class="text-center mt-2 font-bold">CROSS JOIN</div>
 
 ---
+
+## 子查询
+
+### 简单子查询
+
+```sql
+-- 查询工资大于平均数的员工,并按照工资降序排列
+SELECT first_name||' '||last_name,salary from employees
+where salary>=(select AVG(salary) from employees)
+order by salary desc
+```
+
+<ZoomImg src="/images/pgsql/sql_44.png" title="简单子查询"/>
+<div class="text-center mt-2 font-bold">简单子查询</div>
+
+### 多表连接子查询
+
+```sql
+-- 先计算出每个部门的工资总和,然后和部门表进行连接
+select d.department_name,ds.total_salary
+from departments d
+join (
+select department_id,sum(salary) as total_salary
+from employees
+group by department_id) ds
+on d.department_id = ds.department_id
+```
+
+<ZoomImg src="/images/pgsql/sql_45.png" title="多表连接子查询"/>
+<div class="text-center mt-2 font-bold">多表连接子查询</div>
+
+### IN 子查询
+
+```sql
+-- 查询2008年之后入职的员工所在的部门
+select * from departments
+where department_id
+in (
+select distinct department_id
+from employees
+where hire_date >= date '2008-01-01');
+```
+
+<ZoomImg src="/images/pgsql/sql_46.png" title="IN 子查询"/>
+<div class="text-center mt-2 font-bold">IN 子查询</div>
+
+### ALL 子查询
+
+```sql
+-- 查询工资高于销售部最高员工工资的员工
+select * from employees
+where salary > all (
+select salary as "销售部工资"
+from employees
+where department_id = 80)
+```
+
+<ZoomImg src="/images/pgsql/sql_47.png" title="ALL 子查询"/>
+<div class="text-center mt-2 font-bold">ALL 子查询</div>
+
+### ANY 子查询
+
+**ANY 子查询** 与 **ALL 子查询** 的区别在于，**ANY 子查询** 只要**一个**子查询结果满足条件即可，而 **ALL 子查询** 需要**所有**子查询结果都满足条件。
+
+```sql
+-- 查询工资高于销售部所有员工工资的员工
+select * from employees
+where salary > any (
+select salary as "销售部工资"
+from employees
+where department_id = 80)
+```
+
+<ZoomImg src="/images/pgsql/sql_48.png" title="ANY 子查询"/>
+<div class="text-center mt-2 font-bold">ANY 子查询</div>
+
+### 关联子查询
+
+```sql
+/*
+查询每个部门的名称和该部门的工资总额
+1. 遍历 departments 表的每一行
+2. 对每个部门，执行子查询：
+   - 找出该部门的所有员工
+   - 计算工资总和
+3. 返回：部门名 + 工资总额
+*/
+select d.department_name,(
+select sum(salary)
+from employees
+where department_id = d.department_id)
+from departments d
+```
+
+<ZoomImg src="/images/pgsql/sql_49.png" title="关联子查询"/>
+<div class="text-center mt-2 font-bold">关联子查询</div>

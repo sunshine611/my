@@ -2,6 +2,8 @@
 
 ::: tip 什么是 PostgreSQL？
 PostgreSQL（常简称为 Postgres）是一个功能强大的开源对象关系型数据库管理系统（ORDBMS），拥有超过 35 年的发展历史。它以稳定性、数据完整性和正确性著称。
+
+[PostgreSQL 开发指南](/server/postgresql/pdf-guide.html)
 :::
 
 ## 一、PostgreSQL 概述
